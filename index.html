@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Private Chef Anna - Digital Menu Book</title>
     
     <!-- Tailwind CSS -->
@@ -37,11 +37,10 @@
             margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: #050505;
             display: flex; align-items: center; justify-content: center;
-            overflow: hidden; 
             font-family: 'Plus Jakarta Sans', sans-serif;
             color: #e5e5e5;
             -webkit-tap-highlight-color: transparent;
-            touch-action: pan-y; 
+            /* Removed overflow: hidden and touch-action: pan-y to allow native browser pinch-to-zoom and panning */
         }
 
         .book-container {
@@ -49,7 +48,7 @@
             max-width: 56.25vh; /* Strict 9:16 portrait ratio constraint */
             position: relative;
             background: #121212;
-            overflow: hidden;
+            overflow: hidden; /* Keeps pages contained inside the book */
             box-shadow: 0 0 40px rgba(0,0,0,0.8);
             border-left: 1px solid rgba(197, 160, 89, 0.15);
             border-right: 1px solid rgba(197, 160, 89, 0.15);
@@ -124,21 +123,12 @@
         input:focus, select:focus, textarea:focus { border-color: #c5a059; }
         .form-label { font-size: clamp(0.55rem, 1.1vh, 0.75rem); color: #9ca3af; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3vh; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .form-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5vw; width: 100%; }
-        
-        /* Edge Tap Zones (Invisible) */
-        .tap-zone { position: absolute; top: 0; bottom: 0; width: 25%; z-index: 50; }
-        .tap-left { left: 0; }
-        .tap-right { right: 0; }
     </style>
 </head>
 <body>
 
     <div class="book-container" id="book">
         
-        <!-- Invisible Edge Tap Navigation -->
-        <div class="tap-zone tap-left" onclick="prevPage()"></div>
-        <div class="tap-zone tap-right" onclick="nextPage()"></div>
-
         <!-- Index 0 : Cover -->
         <div class="page active">
             <div class="page-content bg-black !p-0">
@@ -1054,18 +1044,29 @@
             window.open(whatsappUrl, '_blank');
         }
 
-        // Swipe Gestures
+        // Swipe Gestures & Edge Taps
         const book = document.getElementById('book');
         let touchStartX = 0;
         let touchEndX = 0;
 
+        // Handle edge clicks via Javascript to prevent Z-index blocking over buttons
+        book.addEventListener('click', (e) => {
+            // Ignore click to turn page if they are interacting with buttons, inputs, links
+            if (e.target.closest('button, input, textarea, select, a, .index-link')) return;
+            
+            const rect = book.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            if (x < rect.width * 0.25) prevPage();
+            else if (x > rect.width * 0.75) nextPage();
+        });
+
         book.addEventListener('touchstart', e => {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+            if (e.target.closest('button, input, textarea, select, a, .index-link')) return;
             touchStartX = e.changedTouches[0].screenX;
         }, { passive: true });
 
         book.addEventListener('touchend', e => {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+            if (e.target.closest('button, input, textarea, select, a, .index-link')) return;
             touchEndX = e.changedTouches[0].screenX;
             handleSwipe();
         }, { passive: true });
