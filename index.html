@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Private Chef Anna - Digital Menu Book</title>
     
     <!-- Tailwind CSS -->
@@ -15,6 +15,7 @@
                         charcoal: '#121212',
                         darkcard: '#1e1e1e',
                         warmgold: '#c5a059',
+                        buttonbg: '#2a2218',
                     },
                     fontFamily: {
                         serif: ['Playfair Display', 'Georgia', 'serif'],
@@ -40,7 +41,6 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             color: #e5e5e5;
             -webkit-tap-highlight-color: transparent;
-            /* Removed overflow: hidden and touch-action: pan-y to allow native browser pinch-to-zoom and panning */
         }
 
         .book-container {
@@ -54,6 +54,21 @@
             border-right: 1px solid rgba(197, 160, 89, 0.15);
         }
 
+        /* Top Corner Navigation Arrows */
+        .nav-arrow {
+            position: absolute; top: 1.5vh; width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(197, 160, 89, 0.9); font-size: 1.2rem;
+            z-index: 100; cursor: pointer;
+            background: rgba(26, 26, 26, 0.9);
+            border-radius: 50%; border: 1px solid rgba(197, 160, 89, 0.4);
+            transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+        }
+        .nav-arrow:active { background: #c5a059; color: #121212; }
+        .nav-arrow.left { left: 3%; }
+        .nav-arrow.right { right: 3%; }
+        .nav-arrow.hidden { opacity: 0; pointer-events: none; }
+
         .page {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #121212; 
@@ -65,7 +80,6 @@
         .page.active { transform: translateX(0); z-index: 20; visibility: visible; }
         .page.prev { transform: translateX(-100%); z-index: 10; visibility: hidden; }
 
-        /* Subtle shadow for depth on swipe */
         .page::before {
             content: ''; position: absolute; top: 0; left: -20px; bottom: 0; width: 20px;
             background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%); z-index: 30;
@@ -73,16 +87,21 @@
 
         .page-content {
             position: absolute; inset: 0;
-            padding: 3.5vh 4vw 6vh 4vw; /* Tightened padding to fit more text safely */
-            display: flex; flex-direction: column; justify-content: center;
+            padding: 4vh 3% 6vh 3%; /* Reduced side padding (3%) for max text width */
+            display: flex; flex-direction: column; justify-content: flex-start;
             box-sizing: border-box; width: 100%; height: 100%;
+            overflow-y: auto; overflow-x: hidden;
+            scrollbar-width: none; -ms-overflow-style: none; /* Hide scrollbar but allow scroll if needed */
         }
+        .page-content::-webkit-scrollbar { display: none; }
+
+        .vertical-center-wrapper { margin: auto 0; width: 100%; } /* Centers content vertically when possible */
 
         .page-number {
             position: absolute; bottom: 1.5vh; left: 0; right: 0;
             text-align: center; font-family: 'Playfair Display', serif;
             font-size: clamp(0.75rem, 1.5vh, 1rem); color: rgba(197, 160, 89, 0.5);
-            pointer-events: none;
+            pointer-events: none; z-index: 50;
         }
 
         .gold-gradient-text {
@@ -91,35 +110,47 @@
         }
 
         /* Typography & Alignment */
-        .page-header { text-align: center; margin-bottom: 1.5vh; }
+        .page-header { text-align: center; margin-bottom: 2vh; margin-top: 1vh; flex-shrink: 0; }
         .page-title { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 3.5vh, 2.2rem); color: #c5a059; margin-bottom: 0.25vh; line-height: 1.1; }
         .page-subtitle { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; letter-spacing: 0.1em; font-size: clamp(0.7rem, 1.4vh, 0.85rem); color: #9ca3af; text-transform: uppercase; border-bottom: 1px solid rgba(197, 160, 89, 0.3); padding-bottom: 1vh; }
 
-        .card { background-color: #1a1a1a; border-radius: 0.5rem; padding: 1.5vh 3vw; border: 1px solid rgba(197, 160, 89, 0.2); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); margin-bottom: 1.2vh; width: 100%; box-sizing: border-box; }
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8vh; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 0.8vh; }
-        .item-title { font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: clamp(0.9rem, 2vh, 1.2rem); color: #c5a059; line-height: 1.2; text-align: left; }
-        .item-price { background-color: rgba(197, 160, 89, 0.15); padding: 0.15rem 0.5rem; border-radius: 0.25rem; color: white; font-weight: 700; font-size: clamp(0.8rem, 1.8vh, 1.1rem); white-space: nowrap; }
+        /* Card & Layout matched to 130229.jpg */
+        .card { background-color: #161616; border-radius: 0.5rem; padding: 2vh 4%; border: 1px solid rgba(197, 160, 89, 0.2); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); margin-bottom: 1.5vh; width: 100%; box-sizing: border-box; flex-shrink: 0; }
         
-        .desc-text { font-size: clamp(0.7rem, 1.4vh, 0.9rem); color: #d1d5db; line-height: 1.35; text-align: justify; text-justify: inter-word; hyphens: auto; -webkit-hyphens: auto; margin-bottom: 0.5vh; }
-        .desc-text:last-child { margin-bottom: 0; }
-        .desc-label { color: white; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: clamp(0.7rem, 1.4vh, 0.9rem); margin-right: 0.5vw; }
+        .card-header-block { margin-bottom: 2vh; }
+        .opt-title { font-family: 'Playfair Display', serif; font-size: clamp(1.4rem, 2.8vh, 1.8rem); color: #ffffff; font-weight: 600; line-height: 1.1; margin-bottom: 0.5vh; }
+        
+        /* Course block styling with specific extra line space */
+        .course-block { margin-bottom: 2.2vh; }
+        .course-block:last-of-type { margin-bottom: 1.5vh; }
+        
+        .course-label-wrapper { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5vh; }
+        .course-icon { color: #c5a059; font-size: clamp(0.7rem, 1.4vh, 0.9rem); }
+        .course-title { color: #ffffff; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: clamp(0.7rem, 1.4vh, 0.9rem); }
+        .course-desc { font-size: clamp(0.75rem, 1.5vh, 0.95rem); color: #d1d5db; line-height: 1.4; text-align: left; }
 
-        /* Interactive Buttons */
+        /* Solid Dark Gold Interactive Buttons */
         .order-btn {
-            margin-top: 0.8vh; width: 100%; padding: 1vh 0; background-color: rgba(197, 160, 89, 0.1);
-            color: #c5a059; font-size: clamp(0.6rem, 1.2vh, 0.8rem); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-            border-radius: 0.25rem; border: 1px solid rgba(197, 160, 89, 0.3); transition: all 0.2s; cursor: pointer;
+            width: 100%; padding: 1.2vh 0; background-color: #2a2218;
+            color: #c5a059; font-size: clamp(0.65rem, 1.3vh, 0.85rem); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+            border-radius: 0.3rem; border: 1px solid rgba(197, 160, 89, 0.15); transition: all 0.2s; cursor: pointer;
         }
         .order-btn:active { background-color: #c5a059; color: #121212; }
 
         /* Index List */
         .index-link { cursor: pointer; transition: color 0.3s; padding: 1.8vh 0; border-bottom: 1px dashed rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between; }
         .index-link:last-child { border-bottom: none; }
-        .index-title { font-serif; font-size: clamp(1.1rem, 2.5vh, 1.6rem); color: white; }
+        .index-title { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem, 2.5vh, 1.6rem); color: white; }
         .index-pg { color: #c5a059; font-size: clamp(0.8rem, 1.7vh, 1rem); font-weight: 700; text-transform: uppercase; }
 
         /* Forms */
-        input, select, textarea { -webkit-appearance: none; width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.25rem; padding: 0.8vh 1.5vw; color: white; font-size: clamp(0.7rem, 1.4vh, 0.9rem); outline: none; }
+        /* font-size: 16px is required on mobile inputs to prevent unwanted screen zooming on iOS */
+        input, select, textarea { 
+            -webkit-appearance: none; width: 100%; box-sizing: border-box; 
+            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 0.25rem; padding: 1vh 1.5vw; color: white; 
+            font-size: 16px; outline: none; 
+        }
         input:focus, select:focus, textarea:focus { border-color: #c5a059; }
         .form-label { font-size: clamp(0.55rem, 1.1vh, 0.75rem); color: #9ca3af; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3vh; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .form-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5vw; width: 100%; }
@@ -129,15 +160,17 @@
 
     <div class="book-container" id="book">
         
+        <!-- Navigation Arrows Overlay -->
+        <div class="nav-arrow left hidden" id="prev-btn" onclick="prevPage()"><i class="fa-solid fa-chevron-left"></i></div>
+        <div class="nav-arrow right" id="next-btn" onclick="nextPage()"><i class="fa-solid fa-chevron-right"></i></div>
+
         <!-- Index 0 : Cover -->
         <div class="page active">
-            <div class="page-content bg-black !p-0">
-                <!-- Faint Background Image -->
+            <div class="page-content bg-black !p-0 !justify-center">
                 <div class="absolute inset-0 bg-cover bg-center opacity-30" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/07/IMG-20230612-WA0015.jpg');"></div>
                 <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90"></div>
                 
                 <div class="relative z-10 flex flex-col items-center justify-center h-full text-center p-6 border-4 border-warmgold/30 m-4 rounded-sm pointer-events-none">
-                
                 <img src="https://www.privatechefanna.co.za/wp-content/uploads/2026/10/PCA-ROUND-WHITE.png" alt="Private Chef Anna Logo" class="w-32 h-32 sm:w-40 sm:h-40 mb-6 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.15)] pointer-events-none" onerror="this.style.display='none';">
                 
                 <span class="tracking-[0.2em] text-[clamp(0.75rem,1.6vh,0.95rem)] text-gray-300 uppercase mb-4">Luxury In-Home Gastronomy</span>
@@ -150,16 +183,18 @@
         
         <!-- Index 1 : Welcome -->
         <div class="page">
-            <div class="page-content flex flex-col items-center justify-center text-center bg-[#151515]">
-                <i class="fa-solid fa-utensils text-[clamp(2.5rem,5vh,3.5rem)] text-warmgold mb-8 opacity-50"></i>
-                <h2 class="font-serif text-[clamp(2.5rem,5.5vh,3.5rem)] text-white mb-8">Welcome</h2>
-                <div class="w-full max-w-[90%] mx-auto relative z-40">
-                    <p class="font-book text-gray-300 text-[clamp(1.3rem,2.8vh,1.8rem)] italic leading-relaxed text-center">
-                        "Recreating authentic global cuisines with a signature gourmet touch. Unlocking exquisite private dining, interactive foodie bars, and gourmet convenience meals directly to your table."
-                    </p>
-                </div>
-                <div class="mt-12 pt-8 border-t border-white/5 w-full overflow-hidden">
-                    <p class="text-warmgold text-[clamp(0.65rem,1.4vh,0.85rem)] font-semibold tracking-[0.15em] uppercase whitespace-nowrap w-full text-center">KuGompo City, Eastern Cape</p>
+            <div class="page-content bg-[#151515]">
+                <div class="vertical-center-wrapper flex flex-col items-center justify-center text-center">
+                    <i class="fa-solid fa-utensils text-[clamp(2.5rem,5vh,3.5rem)] text-warmgold mb-8 opacity-50"></i>
+                    <h2 class="font-serif text-[clamp(2.5rem,5.5vh,3.5rem)] text-white mb-8">Welcome</h2>
+                    <div class="w-full max-w-[90%] mx-auto relative z-40">
+                        <p class="font-book text-gray-300 text-[clamp(1.3rem,2.8vh,1.8rem)] italic leading-relaxed text-center">
+                            "Recreating authentic global cuisines with a signature gourmet touch. Unlocking exquisite private dining, interactive foodie bars, and gourmet convenience meals directly to your table."
+                        </p>
+                    </div>
+                    <div class="mt-12 pt-8 border-t border-white/5 w-full overflow-hidden">
+                        <p class="text-warmgold text-[clamp(0.65rem,1.4vh,0.85rem)] font-semibold tracking-[0.15em] uppercase whitespace-nowrap w-full text-center">KuGompo City, Eastern Cape</p>
+                    </div>
                 </div>
                 <div class="page-number">1</div>
             </div>
@@ -167,34 +202,36 @@
 
         <!-- Index 2 : TOC -->
         <div class="page">
-            <div class="page-content flex flex-col bg-[#121212]">
-                <div class="page-header relative z-40">
-                    <h2 class="page-title !border-none !mb-0">Table of Contents</h2>
-                </div>
-                <div class="flex-1 flex flex-col justify-center space-y-1 relative z-40">
-                    <div class="index-link" onclick="goToPage(3)">
-                        <span class="index-title font-serif">01. Private Dining</span>
-                        <span class="index-pg">Pg. 3</span>
+            <div class="page-content bg-[#121212]">
+                <div class="vertical-center-wrapper">
+                    <div class="page-header relative z-40 !mb-6">
+                        <h2 class="page-title !border-none !mb-0">Table of Contents</h2>
                     </div>
-                    <div class="index-link" onclick="goToPage(7)">
-                        <span class="index-title font-serif">02. Family Style</span>
-                        <span class="index-pg">Pg. 7</span>
-                    </div>
-                    <div class="index-link" onclick="goToPage(9)">
-                        <span class="index-title font-serif">03. Foodie Bars</span>
-                        <span class="index-pg">Pg. 9</span>
-                    </div>
-                    <div class="index-link" onclick="goToPage(11)">
-                        <span class="index-title font-serif">04. Convenience</span>
-                        <span class="index-pg">Pg. 11</span>
-                    </div>
-                    <div class="index-link" onclick="goToPage(17)">
-                        <span class="index-title font-serif">05. Harvest Tables</span>
-                        <span class="index-pg">Pg. 17</span>
-                    </div>
-                    <div class="index-link" onclick="goToPage(19)">
-                        <span class="index-title font-serif">06. Gallery</span>
-                        <span class="index-pg">Pg. 19</span>
+                    <div class="flex-1 flex flex-col justify-center space-y-1 relative z-40">
+                        <div class="index-link" onclick="goToPage(3)">
+                            <span class="index-title font-serif">01. Private Dining</span>
+                            <span class="index-pg">Pg. 3</span>
+                        </div>
+                        <div class="index-link" onclick="goToPage(7)">
+                            <span class="index-title font-serif">02. Family Style</span>
+                            <span class="index-pg">Pg. 7</span>
+                        </div>
+                        <div class="index-link" onclick="goToPage(9)">
+                            <span class="index-title font-serif">03. Foodie Bars</span>
+                            <span class="index-pg">Pg. 9</span>
+                        </div>
+                        <div class="index-link" onclick="goToPage(11)">
+                            <span class="index-title font-serif">04. Convenience</span>
+                            <span class="index-pg">Pg. 11</span>
+                        </div>
+                        <div class="index-link" onclick="goToPage(17)">
+                            <span class="index-title font-serif">05. Harvest Tables</span>
+                            <span class="index-pg">Pg. 17</span>
+                        </div>
+                        <div class="index-link" onclick="goToPage(19)">
+                            <span class="index-title font-serif">06. Gallery</span>
+                            <span class="index-pg">Pg. 19</span>
+                        </div>
                     </div>
                 </div>
                 <div class="page-number">2</div>
@@ -204,29 +241,65 @@
         <!-- Index 3 : Private Dining 2-Course (1 & 2) -->
         <div class="page">
             <div class="page-content">
-                <div class="page-header pointer-events-none">
-                    <h2 class="page-title">Private Dining</h2>
-                    <h3 class="page-subtitle">2-Course Plated</h3>
-                </div>
-                
-                <div class="card relative z-40">
-                    <div class="card-header">
-                        <span class="item-title">Option 1</span>
-                        <span class="item-price">R360 pp</span>
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none">
+                        <h2 class="page-title">Private Dining</h2>
+                        <h3 class="page-subtitle">2-Course Plated</h3>
+                        <div class="mt-[1.5vh] flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-circle-info text-warmgold text-[clamp(0.7rem,1.4vh,0.9rem)]"></i>
+                            <span class="text-[clamp(0.65rem,1.3vh,0.85rem)] text-gray-400 italic">Service fee of R350 per hour will be added for on-site cooking & serving.</span>
+                        </div>
                     </div>
-                    <p class="desc-text"><span class="desc-label">Starter:</span>Seared Tuna | Sushi Rice | Edamame | Yuzu</p>
-                    <p class="desc-text"><span class="desc-label">Main:</span>Slow Roasted Lamb | Rosemary Jus | Panko Potato Rosti | Vegetable Medley</p>
-                    <button class="order-btn" onclick="selectMenu('Private Dining 2-Course: Option 1')">Book This Menu</button>
-                </div>
+                    
+                    <div class="card relative z-40">
+                        <div class="card-header-block">
+                            <h3 class="opt-title">Option 1</h3>
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-warmgold font-bold text-[clamp(1rem,2vh,1.2rem)]">R360</span>
+                                <span class="text-gray-400 text-[clamp(0.75rem,1.5vh,0.9rem)]">per person</span>
+                            </div>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-utensils course-icon"></i>
+                                <span class="course-title">Starter</span>
+                            </div>
+                            <p class="course-desc">Seared Tuna | Sushi Rice | Edamame | Yuzu</p>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-bell-concierge course-icon"></i>
+                                <span class="course-title">Main</span>
+                            </div>
+                            <p class="course-desc">Slow Roasted Lamb | Rosemary Jus | Panko Potato Rosti | Vegetable Medley</p>
+                        </div>
+                        <button class="order-btn" onclick="selectMenu('Private Dining 2-Course: Option 1')">Book This Menu</button>
+                    </div>
 
-                <div class="card relative z-40">
-                    <div class="card-header">
-                        <span class="item-title">Option 2</span>
-                        <span class="item-price">R310 pp</span>
+                    <div class="card relative z-40">
+                        <div class="card-header-block">
+                            <h3 class="opt-title">Option 2</h3>
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-warmgold font-bold text-[clamp(1rem,2vh,1.2rem)]">R310</span>
+                                <span class="text-gray-400 text-[clamp(0.75rem,1.5vh,0.9rem)]">per person</span>
+                            </div>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-utensils course-icon"></i>
+                                <span class="course-title">Starter</span>
+                            </div>
+                            <p class="course-desc">Ricotta & Spinach Ravioli | Parmesan Créme | Basil</p>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-bell-concierge course-icon"></i>
+                                <span class="course-title">Main</span>
+                            </div>
+                            <p class="course-desc">Beef Ossobuco | Buttery Polenta | Sauteed Greens</p>
+                        </div>
+                        <button class="order-btn" onclick="selectMenu('Private Dining 2-Course: Option 2')">Book This Menu</button>
                     </div>
-                    <p class="desc-text"><span class="desc-label">Starter:</span>Ricotta & Spinach Ravioli | Parmesan Créme | Basil</p>
-                    <p class="desc-text"><span class="desc-label">Main:</span>Beef Ossobuco | Buttery Polenta | Sauteed Greens</p>
-                    <button class="order-btn" onclick="selectMenu('Private Dining 2-Course: Option 2')">Book This Menu</button>
                 </div>
                 <div class="page-number">3</div>
             </div>
@@ -235,29 +308,65 @@
         <!-- Index 4 : Private Dining 2-Course (3 & 4) -->
         <div class="page">
             <div class="page-content">
-                <div class="page-header pointer-events-none">
-                    <h2 class="page-title">Private Dining</h2>
-                    <h3 class="page-subtitle">2-Course Plated (Cont.)</h3>
-                </div>
-                
-                <div class="card relative z-40">
-                    <div class="card-header">
-                        <span class="item-title">Option 3</span>
-                        <span class="item-price">R340 pp</span>
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none">
+                        <h2 class="page-title">Private Dining</h2>
+                        <h3 class="page-subtitle">2-Course Plated (Cont.)</h3>
+                        <div class="mt-[1.5vh] flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-circle-info text-warmgold text-[clamp(0.7rem,1.4vh,0.9rem)]"></i>
+                            <span class="text-[clamp(0.65rem,1.3vh,0.85rem)] text-gray-400 italic">Service fee of R350 per hour will be added for on-site cooking & serving.</span>
+                        </div>
                     </div>
-                    <p class="desc-text"><span class="desc-label">Starter:</span>Mojo Grilled Prawns | Chorizo & Black Bean Fry | Baby Herb Salad</p>
-                    <p class="desc-text"><span class="desc-label">Main:</span>Grilled Beef Fillet | Creamy Wild Mushrooms | Potato Fondant | Vegetable Medley</p>
-                    <button class="order-btn" onclick="selectMenu('Private Dining 2-Course: Option 3')">Book This Menu</button>
-                </div>
+                    
+                    <div class="card relative z-40">
+                        <div class="card-header-block">
+                            <h3 class="opt-title">Option 3</h3>
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-warmgold font-bold text-[clamp(1rem,2vh,1.2rem)]">R340</span>
+                                <span class="text-gray-400 text-[clamp(0.75rem,1.5vh,0.9rem)]">per person</span>
+                            </div>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-utensils course-icon"></i>
+                                <span class="course-title">Starter</span>
+                            </div>
+                            <p class="course-desc">Mojo Grilled Prawns | Chorizo & Black Bean Fry | Baby Herb Salad</p>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-bell-concierge course-icon"></i>
+                                <span class="course-title">Main</span>
+                            </div>
+                            <p class="course-desc">Grilled Beef Fillet | Creamy Wild Mushrooms | Potato Fondant | Vegetable Medley</p>
+                        </div>
+                        <button class="order-btn" onclick="selectMenu('Private Dining 2-Course: Option 3')">Book This Menu</button>
+                    </div>
 
-                <div class="card relative z-40">
-                    <div class="card-header">
-                        <span class="item-title">Option 4</span>
-                        <span class="item-price">R340 pp</span>
+                    <div class="card relative z-40">
+                        <div class="card-header-block">
+                            <h3 class="opt-title">Option 4</h3>
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-warmgold font-bold text-[clamp(1rem,2vh,1.2rem)]">R340</span>
+                                <span class="text-gray-400 text-[clamp(0.75rem,1.5vh,0.9rem)]">per person</span>
+                            </div>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-utensils course-icon"></i>
+                                <span class="course-title">Starter</span>
+                            </div>
+                            <p class="course-desc">Grilled Chicken | Olive Crouton | Baby Cos Leaves | Ceaser Dressing</p>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-bell-concierge course-icon"></i>
+                                <span class="course-title">Main</span>
+                            </div>
+                            <p class="course-desc">Grilled Lamb Cutlets | Rosemary Jus | Mint & Feta Orzo | Roasted Carrots & Fine Beans</p>
+                        </div>
+                        <button class="order-btn" onclick="selectMenu('Private Dining 2-Course: Option 4')">Book This Menu</button>
                     </div>
-                    <p class="desc-text"><span class="desc-label">Starter:</span>Grilled Chicken | Olive Crouton | Baby Cos Leaves | Ceaser Dressing</p>
-                    <p class="desc-text"><span class="desc-label">Main:</span>Grilled Lamb Cutlets | Rosemary Jus | Mint & Feta Orzo | Roasted Carrots & Fine Beans</p>
-                    <button class="order-btn" onclick="selectMenu('Private Dining 2-Course: Option 4')">Book This Menu</button>
                 </div>
                 <div class="page-number">4</div>
             </div>
@@ -266,20 +375,47 @@
         <!-- Index 5 : Private Dining 3-Course (1) -->
         <div class="page">
             <div class="page-content">
-                <div class="page-header pointer-events-none">
-                    <h2 class="page-title">Private Dining</h2>
-                    <h3 class="page-subtitle">3-Course Plated</h3>
-                </div>
-                
-                <div class="card relative z-40">
-                    <div class="card-header">
-                        <span class="item-title">Option 1</span>
-                        <span class="item-price">R480 pp</span>
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none">
+                        <h2 class="page-title">Private Dining</h2>
+                        <h3 class="page-subtitle">3-Course Plated</h3>
+                        <div class="mt-[1.5vh] flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-circle-info text-warmgold text-[clamp(0.7rem,1.4vh,0.9rem)]"></i>
+                            <span class="text-[clamp(0.65rem,1.3vh,0.85rem)] text-gray-400 italic">Service fee of R350 per hour will be added for on-site cooking & serving.</span>
+                        </div>
                     </div>
-                    <p class="desc-text"><span class="desc-label">Starter:</span>Seared Tuna | Sushi Rice | Edamame | Yuzu</p>
-                    <p class="desc-text"><span class="desc-label">Main:</span>Slow Roasted Lamb | Rosemary Jus | Panko Potato Rosti | Vegetable Medley</p>
-                    <p class="desc-text"><span class="desc-label">Dessert:</span>Salted Caramel Panna Cotta | Popcorn | Berries</p>
-                    <button class="order-btn" onclick="selectMenu('Private Dining 3-Course: Option 1')">Book This Menu</button>
+                    
+                    <div class="card relative z-40">
+                        <div class="card-header-block">
+                            <h3 class="opt-title">Option 1</h3>
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-warmgold font-bold text-[clamp(1rem,2vh,1.2rem)]">R480</span>
+                                <span class="text-gray-400 text-[clamp(0.75rem,1.5vh,0.9rem)]">per person</span>
+                            </div>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-utensils course-icon"></i>
+                                <span class="course-title">Starter</span>
+                            </div>
+                            <p class="course-desc">Seared Tuna | Sushi Rice | Edamame | Yuzu</p>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-bell-concierge course-icon"></i>
+                                <span class="course-title">Main</span>
+                            </div>
+                            <p class="course-desc">Slow Roasted Lamb | Rosemary Jus | Panko Potato Rosti | Vegetable Medley</p>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-ice-cream course-icon"></i>
+                                <span class="course-title">Dessert</span>
+                            </div>
+                            <p class="course-desc">Salted Caramel Panna Cotta | Popcorn | Berries</p>
+                        </div>
+                        <button class="order-btn" onclick="selectMenu('Private Dining 3-Course: Option 1')">Book This Menu</button>
+                    </div>
                 </div>
                 <div class="page-number">5</div>
             </div>
@@ -288,31 +424,79 @@
         <!-- Index 6 : Private Dining 3-Course (2 & 3) -->
         <div class="page">
             <div class="page-content">
-                <div class="page-header pointer-events-none">
-                    <h2 class="page-title">Private Dining</h2>
-                    <h3 class="page-subtitle">3-Course Plated (Cont.)</h3>
-                </div>
-                
-                <div class="card relative z-40">
-                    <div class="card-header">
-                        <span class="item-title">Option 2</span>
-                        <span class="item-price">R430 pp</span>
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none">
+                        <h2 class="page-title">Private Dining</h2>
+                        <h3 class="page-subtitle">3-Course Plated (Cont.)</h3>
+                        <div class="mt-[1.5vh] flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-circle-info text-warmgold text-[clamp(0.7rem,1.4vh,0.9rem)]"></i>
+                            <span class="text-[clamp(0.65rem,1.3vh,0.85rem)] text-gray-400 italic">Service fee of R350 per hour will be added for on-site cooking & serving.</span>
+                        </div>
                     </div>
-                    <p class="desc-text"><span class="desc-label">Starter:</span>Ricotta & Spinach Ravioli | Parmesan Créme | Basil</p>
-                    <p class="desc-text"><span class="desc-label">Main:</span>Beef Ossobuco | Buttery Polenta | Sauteed Greens</p>
-                    <p class="desc-text"><span class="desc-label">Dessert:</span>Lemon Cheesecake | Berries</p>
-                    <button class="order-btn" onclick="selectMenu('Private Dining 3-Course: Option 2')">Book This Menu</button>
-                </div>
+                    
+                    <div class="card relative z-40">
+                        <div class="card-header-block">
+                            <h3 class="opt-title">Option 2</h3>
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-warmgold font-bold text-[clamp(1rem,2vh,1.2rem)]">R430</span>
+                                <span class="text-gray-400 text-[clamp(0.75rem,1.5vh,0.9rem)]">per person</span>
+                            </div>
+                        </div>
+                        <div class="course-block !mb-1.5">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-utensils course-icon"></i>
+                                <span class="course-title">Starter</span>
+                            </div>
+                            <p class="course-desc">Ricotta & Spinach Ravioli | Parmesan Créme | Basil</p>
+                        </div>
+                        <div class="course-block !mb-1.5">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-bell-concierge course-icon"></i>
+                                <span class="course-title">Main</span>
+                            </div>
+                            <p class="course-desc">Beef Ossobuco | Buttery Polenta | Sauteed Greens</p>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-ice-cream course-icon"></i>
+                                <span class="course-title">Dessert</span>
+                            </div>
+                            <p class="course-desc">Lemon Cheesecake | Berries</p>
+                        </div>
+                        <button class="order-btn" onclick="selectMenu('Private Dining 3-Course: Option 2')">Book This Menu</button>
+                    </div>
 
-                <div class="card relative z-40">
-                    <div class="card-header">
-                        <span class="item-title">Option 3</span>
-                        <span class="item-price">R460 pp</span>
+                    <div class="card relative z-40 !mb-0">
+                        <div class="card-header-block">
+                            <h3 class="opt-title">Option 3</h3>
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-warmgold font-bold text-[clamp(1rem,2vh,1.2rem)]">R460</span>
+                                <span class="text-gray-400 text-[clamp(0.75rem,1.5vh,0.9rem)]">per person</span>
+                            </div>
+                        </div>
+                        <div class="course-block !mb-1.5">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-utensils course-icon"></i>
+                                <span class="course-title">Starter</span>
+                            </div>
+                            <p class="course-desc">Mojo Grilled Prawns | Chorizo & Black Bean Fry | Baby Herb Salad</p>
+                        </div>
+                        <div class="course-block !mb-1.5">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-bell-concierge course-icon"></i>
+                                <span class="course-title">Main</span>
+                            </div>
+                            <p class="course-desc">Grilled Beef Fillet | Creamy Wild Mushrooms | Potato Fondant | Vegetable Medley</p>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-ice-cream course-icon"></i>
+                                <span class="course-title">Dessert</span>
+                            </div>
+                            <p class="course-desc">Dark Chocolate & Orange Brownie | Pecan Nuts | Berries</p>
+                        </div>
+                        <button class="order-btn" onclick="selectMenu('Private Dining 3-Course: Option 3')">Book This Menu</button>
                     </div>
-                    <p class="desc-text"><span class="desc-label">Starter:</span>Mojo Grilled Prawns | Chorizo & Black Bean Fry | Baby Herb Salad</p>
-                    <p class="desc-text"><span class="desc-label">Main:</span>Grilled Beef Fillet | Creamy Wild Mushrooms | Potato Fondant | Vegetable Medley</p>
-                    <p class="desc-text"><span class="desc-label">Dessert:</span>Dark Chocolate & Orange Brownie | Pecan Nuts | Berries</p>
-                    <button class="order-btn" onclick="selectMenu('Private Dining 3-Course: Option 3')">Book This Menu</button>
                 </div>
                 <div class="page-number">6</div>
             </div>
@@ -321,31 +505,79 @@
         <!-- Index 7 : Family Style (1 & 2) -->
         <div class="page">
             <div class="page-content">
-                <div class="page-header pointer-events-none">
-                    <h2 class="page-title">Family Style Feasts</h2>
-                    <h3 class="page-subtitle">Interactive Dining</h3>
-                </div>
-                
-                <div class="card relative z-40 !mb-2 !py-[1.2vh]">
-                    <div class="card-header !mb-[0.4vh] !pb-[0.4vh]">
-                        <span class="item-title">Option 1</span>
-                        <span class="item-price">R560 pp</span>
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none">
+                        <h2 class="page-title">Family Style Feasts</h2>
+                        <h3 class="page-subtitle">Interactive Dining</h3>
+                        <div class="mt-[1.5vh] flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-circle-info text-warmgold text-[clamp(0.7rem,1.4vh,0.9rem)]"></i>
+                            <span class="text-[clamp(0.65rem,1.3vh,0.85rem)] text-gray-400 italic">Service fee of R350 per hour will be added for on-site cooking & serving.</span>
+                        </div>
                     </div>
-                    <p class="desc-text"><span class="desc-label">Canapés:</span>Mini Trout Sushi Taco | Bruschetta topped with Ricotta & Roasted Tomatoes</p>
-                    <p class="desc-text"><span class="desc-label">Main:</span>Slow Roasted Leg of Lamb | Rosemary Jus | Panko Potato Rosti's | Vegetable Medley | Exotic Tomato Salad | Tzatziki</p>
-                    <p class="desc-text"><span class="desc-label">Mini Desserts:</span>Salted Caramel Cheesecakes | Lemon Tartlets | Fresh Berries</p>
-                    <button class="order-btn !mt-[0.4vh] !py-[0.6vh]" onclick="selectMenu('Family Style Feast: Option 1')">Book This Menu</button>
-                </div>
+                    
+                    <div class="card relative z-40">
+                        <div class="card-header-block !mb-1">
+                            <h3 class="opt-title">Option 1</h3>
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-warmgold font-bold text-[clamp(1rem,2vh,1.2rem)]">R560</span>
+                                <span class="text-gray-400 text-[clamp(0.75rem,1.5vh,0.9rem)]">per person</span>
+                            </div>
+                        </div>
+                        <div class="course-block !mb-1.5">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-leaf course-icon"></i>
+                                <span class="course-title">Canapés</span>
+                            </div>
+                            <p class="course-desc">Mini Trout Sushi Taco | Bruschetta topped with Ricotta & Roasted Tomatoes</p>
+                        </div>
+                        <div class="course-block !mb-1.5">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-bell-concierge course-icon"></i>
+                                <span class="course-title">Main</span>
+                            </div>
+                            <p class="course-desc">Slow Roasted Leg of Lamb | Rosemary Jus | Panko Potato Rosti's | Vegetable Medley | Exotic Tomato Salad | Tzatziki</p>
+                        </div>
+                        <div class="course-block !mb-1.5">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-ice-cream course-icon"></i>
+                                <span class="course-title">Mini Desserts</span>
+                            </div>
+                            <p class="course-desc">Salted Caramel Cheesecakes | Lemon Tartlets | Fresh Berries</p>
+                        </div>
+                        <button class="order-btn !py-[0.8vh]" onclick="selectMenu('Family Style Feast: Option 1')">Book This Menu</button>
+                    </div>
 
-                <div class="card relative z-40 !mb-0 !py-[1.2vh]">
-                    <div class="card-header !mb-[0.4vh] !pb-[0.4vh]">
-                        <span class="item-title">Option 2</span>
-                        <span class="item-price">R530 pp</span>
+                    <div class="card relative z-40 !mb-0">
+                        <div class="card-header-block !mb-1">
+                            <h3 class="opt-title">Option 2</h3>
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-warmgold font-bold text-[clamp(1rem,2vh,1.2rem)]">R530</span>
+                                <span class="text-gray-400 text-[clamp(0.75rem,1.5vh,0.9rem)]">per person</span>
+                            </div>
+                        </div>
+                        <div class="course-block !mb-1.5">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-leaf course-icon"></i>
+                                <span class="course-title">Canapés</span>
+                            </div>
+                            <p class="course-desc">Parma Ham Chicken Lollipops & Berry Glaze | Sushi Rice Discs topped with Trout & Yuzu</p>
+                        </div>
+                        <div class="course-block !mb-1.5">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-bell-concierge course-icon"></i>
+                                <span class="course-title">Main</span>
+                            </div>
+                            <p class="course-desc">Grilled Beef Fillet | Wild Mushroom Sauce | Roasted Potatoes | Vegetable Medley | Zesty Green Salad</p>
+                        </div>
+                        <div class="course-block !mb-1.5">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-ice-cream course-icon"></i>
+                                <span class="course-title">Mini Desserts</span>
+                            </div>
+                            <p class="course-desc">Chocolate Fudge Brownies | Cream Cheese Berry Tartlets</p>
+                        </div>
+                        <button class="order-btn !py-[0.8vh]" onclick="selectMenu('Family Style Feast: Option 2')">Book This Menu</button>
                     </div>
-                    <p class="desc-text"><span class="desc-label">Canapés:</span>Parma Ham Chicken Lollipops & Berry Glaze | Sushi Rice Discs topped with Trout & Yuzu</p>
-                    <p class="desc-text"><span class="desc-label">Main:</span>Grilled Beef Fillet | Wild Mushroom Sauce | Roasted Potatoes | Vegetable Medley | Zesty Green Salad</p>
-                    <p class="desc-text"><span class="desc-label">Mini Desserts:</span>Chocolate Fudge Brownies | Cream Cheese Berry Tartlets</p>
-                    <button class="order-btn !mt-[0.4vh] !py-[0.6vh]" onclick="selectMenu('Family Style Feast: Option 2')">Book This Menu</button>
                 </div>
                 <div class="page-number">7</div>
             </div>
@@ -354,20 +586,47 @@
         <!-- Index 8 : Family Style (3) -->
         <div class="page">
             <div class="page-content">
-                <div class="page-header pointer-events-none">
-                    <h2 class="page-title">Family Style Feasts</h2>
-                    <h3 class="page-subtitle">Interactive Dining (Cont.)</h3>
-                </div>
-
-                <div class="card relative z-40">
-                    <div class="card-header">
-                        <span class="item-title">Option 3</span>
-                        <span class="item-price">R510 pp</span>
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none">
+                        <h2 class="page-title">Family Style Feasts</h2>
+                        <h3 class="page-subtitle">Interactive Dining (Cont.)</h3>
+                        <div class="mt-[1.5vh] flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-circle-info text-warmgold text-[clamp(0.7rem,1.4vh,0.9rem)]"></i>
+                            <span class="text-[clamp(0.65rem,1.3vh,0.85rem)] text-gray-400 italic">Service fee of R350 per hour will be added for on-site cooking & serving.</span>
+                        </div>
                     </div>
-                    <p class="desc-text"><span class="desc-label">Canapés:</span>Mojo Grilled Prawn Cocktail | Bruschetta Caprese</p>
-                    <p class="desc-text"><span class="desc-label">Main:</span>Baharat Spiced Chicken with Lemon Preserve & Green Olives | Jewelled Rice | Melanzane | Roasted Chickpea Salad</p>
-                    <p class="desc-text"><span class="desc-label">Mini Desserts:</span>Baklava Cigars | Custard Flan | Fresh Berries</p>
-                    <button class="order-btn" onclick="selectMenu('Family Style Feast: Option 3')">Book This Menu</button>
+
+                    <div class="card relative z-40">
+                        <div class="card-header-block">
+                            <h3 class="opt-title">Option 3</h3>
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-warmgold font-bold text-[clamp(1rem,2vh,1.2rem)]">R510</span>
+                                <span class="text-gray-400 text-[clamp(0.75rem,1.5vh,0.9rem)]">per person</span>
+                            </div>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-leaf course-icon"></i>
+                                <span class="course-title">Canapés</span>
+                            </div>
+                            <p class="course-desc">Mojo Grilled Prawn Cocktail | Bruschetta Caprese</p>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-bell-concierge course-icon"></i>
+                                <span class="course-title">Main</span>
+                            </div>
+                            <p class="course-desc">Baharat Spiced Chicken with Lemon Preserve & Green Olives | Jewelled Rice | Melanzane | Roasted Chickpea Salad</p>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-ice-cream course-icon"></i>
+                                <span class="course-title">Mini Desserts</span>
+                            </div>
+                            <p class="course-desc">Baklava Cigars | Custard Flan | Fresh Berries</p>
+                        </div>
+                        <button class="order-btn" onclick="selectMenu('Family Style Feast: Option 3')">Book This Menu</button>
+                    </div>
                 </div>
                 <div class="page-number">8</div>
             </div>
@@ -376,35 +635,73 @@
         <!-- Index 9 : Foodie Bars (1 & 2) -->
         <div class="page">
             <div class="page-content">
-                <div class="page-header pointer-events-none">
-                    <h2 class="page-title">Interactive Foodie Bars</h2>
-                    <h3 class="page-subtitle">Live Stations & Buffets</h3>
-                </div>
-                
-                <div class="card relative z-40">
-                    <div class="card-header !flex-col !items-start gap-1">
-                        <span class="item-title text-white">1. Mexican Fiesta: Taco Bar</span>
-                        <div class="flex gap-2 w-full mt-0.5">
-                            <span class="item-price bg-warmgold/10 text-warmgold text-[clamp(0.7rem,1.4vh,0.85rem)]">Med: R120 pp</span>
-                            <span class="item-price text-[clamp(0.7rem,1.4vh,0.85rem)]">Large: R170 pp</span>
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none">
+                        <h2 class="page-title">Interactive Foodie Bars</h2>
+                        <h3 class="page-subtitle">Live Stations & Buffets</h3>
+                        <div class="mt-[1.5vh] flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-circle-info text-warmgold text-[clamp(0.7rem,1.4vh,0.9rem)]"></i>
+                            <span class="text-[clamp(0.65rem,1.3vh,0.85rem)] text-gray-400 italic">Service fee of R350 per hour will be added for on-site cooking & serving.</span>
                         </div>
                     </div>
-                    <p class="desc-text"><span class="desc-label">Proteins & Bases:</span>Slow-cooked Carnitas & Chicken Mole | Refried Beans | Crispy Shells & Tortillas</p>
-                    <p class="desc-text"><span class="desc-label">Toppings & Salsas:</span>Grilled Corn Salsa & Fresh Tomato Salsa | House Guacamole | Shredded Lettuce & Cheese</p>
-                    <button class="order-btn" onclick="selectMenu('Foodie Bar: 1. Mexican Fiesta')">Book This Bar</button>
-                </div>
+                    
+                    <div class="card relative z-40">
+                        <div class="card-header-block">
+                            <h3 class="opt-title !text-[clamp(1.2rem,2.5vh,1.6rem)]">1. Mexican Fiesta: Taco Bar</h3>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span class="text-warmgold font-bold text-[clamp(0.85rem,1.8vh,1rem)]">Med: R120</span><span class="text-gray-400 text-[clamp(0.65rem,1.3vh,0.8rem)]">pp</span>
+                                <span class="text-gray-600">|</span>
+                                <span class="text-warmgold font-bold text-[clamp(0.85rem,1.8vh,1rem)]">Lrg: R170</span><span class="text-gray-400 text-[clamp(0.65rem,1.3vh,0.8rem)]">pp</span>
+                            </div>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-bowl-food course-icon"></i>
+                                <span class="course-title">Proteins & Bases</span>
+                            </div>
+                            <p class="course-desc">Slow-cooked Carnitas & Chicken Mole | Refried Beans | Crispy Shells & Tortillas</p>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-pepper-hot course-icon"></i>
+                                <span class="course-title">Toppings & Salsas</span>
+                            </div>
+                            <p class="course-desc">Grilled Corn Salsa & Fresh Tomato Salsa | House Guacamole | Shredded Lettuce & Cheese</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-[2vw]">
+                            <button class="order-btn" onclick="selectMenu('Foodie Bar: 1. Mexican Fiesta (Medium)')">Book Medium</button>
+                            <button class="order-btn" onclick="selectMenu('Foodie Bar: 1. Mexican Fiesta (Large)')">Book Large</button>
+                        </div>
+                    </div>
 
-                <div class="card relative z-40">
-                    <div class="card-header !flex-col !items-start gap-1">
-                        <span class="item-title text-white">2. Hawaiian Fusion: Poké Bar</span>
-                        <div class="flex gap-2 w-full mt-0.5">
-                            <span class="item-price bg-warmgold/10 text-warmgold text-[clamp(0.7rem,1.4vh,0.85rem)]">Med: R140 pp</span>
-                            <span class="item-price text-[clamp(0.7rem,1.4vh,0.85rem)]">Large: R190 pp</span>
+                    <div class="card relative z-40 !mb-0">
+                        <div class="card-header-block">
+                            <h3 class="opt-title !text-[clamp(1.2rem,2.5vh,1.6rem)]">2. Hawaiian Fusion: Poké Bar</h3>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span class="text-warmgold font-bold text-[clamp(0.85rem,1.8vh,1rem)]">Med: R140</span><span class="text-gray-400 text-[clamp(0.65rem,1.3vh,0.8rem)]">pp</span>
+                                <span class="text-gray-600">|</span>
+                                <span class="text-warmgold font-bold text-[clamp(0.85rem,1.8vh,1rem)]">Lrg: R190</span><span class="text-gray-400 text-[clamp(0.65rem,1.3vh,0.8rem)]">pp</span>
+                            </div>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-bowl-food course-icon"></i>
+                                <span class="course-title">Proteins & Base</span>
+                            </div>
+                            <p class="course-desc">Seared Sushi-Grade Tuna | Prawn Cocktail | Sticky Glazed Chicken | Sushi Rice Base</p>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-carrot course-icon"></i>
+                                <span class="course-title">Crunch & Greens</span>
+                            </div>
+                            <p class="course-desc">Edamame | Avocado | Pickled Carrots | Pak Choi | House Wasabi Mayo & Zesty Yuzu Dressing</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-[2vw]">
+                            <button class="order-btn" onclick="selectMenu('Foodie Bar: 2. Hawaiian Fusion (Medium)')">Book Medium</button>
+                            <button class="order-btn" onclick="selectMenu('Foodie Bar: 2. Hawaiian Fusion (Large)')">Book Large</button>
                         </div>
                     </div>
-                    <p class="desc-text"><span class="desc-label">Proteins & Base:</span>Seared Sushi-Grade Tuna | Prawn Cocktail | Sticky Glazed Chicken | Sushi Rice Base</p>
-                    <p class="desc-text"><span class="desc-label">Crunch & Greens:</span>Edamame | Avocado | Pickled Carrots | Pak Choi | House Wasabi Mayo & Zesty Yuzu Dressing</p>
-                    <button class="order-btn" onclick="selectMenu('Foodie Bar: 2. Hawaiian Fusion')">Book This Bar</button>
                 </div>
                 <div class="page-number">9</div>
             </div>
@@ -413,35 +710,73 @@
         <!-- Index 10 : Foodie Bars (3 & 4) -->
         <div class="page">
             <div class="page-content">
-                <div class="page-header pointer-events-none">
-                    <h2 class="page-title">Interactive Foodie Bars</h2>
-                    <h3 class="page-subtitle">Live Stations & Buffets (Cont.)</h3>
-                </div>
-                
-                <div class="card relative z-40">
-                    <div class="card-header !flex-col !items-start gap-1">
-                        <span class="item-title text-white">3. Artisanal Grazing</span>
-                        <div class="flex gap-2 w-full mt-0.5">
-                            <span class="item-price bg-warmgold/10 text-warmgold text-[clamp(0.7rem,1.4vh,0.85rem)]">Med: R130 pp</span>
-                            <span class="item-price text-[clamp(0.7rem,1.4vh,0.85rem)]">Large: R180 pp</span>
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none">
+                        <h2 class="page-title">Interactive Foodie Bars</h2>
+                        <h3 class="page-subtitle">Live Stations & Buffets (Cont.)</h3>
+                        <div class="mt-[1.5vh] flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-circle-info text-warmgold text-[clamp(0.7rem,1.4vh,0.9rem)]"></i>
+                            <span class="text-[clamp(0.65rem,1.3vh,0.85rem)] text-gray-400 italic">Service fee of R350 per hour will be added for on-site cooking & serving.</span>
                         </div>
                     </div>
-                    <p class="desc-text"><span class="desc-label">Cheeses & Meats:</span>Italian Salami, Parma Ham & Hickory Ham | Camembert, Gorgonzola, Smoked Mozzarella</p>
-                    <p class="desc-text"><span class="desc-label">Accompaniments:</span>Marinated Olives | Fresh Berries | Rich Pesto | Artisanal Crackers & Crispy Bread Sticks</p>
-                    <button class="order-btn" onclick="selectMenu('Foodie Bar: 3. Artisanal Grazing')">Book This Bar</button>
-                </div>
+                    
+                    <div class="card relative z-40">
+                        <div class="card-header-block">
+                            <h3 class="opt-title !text-[clamp(1.2rem,2.5vh,1.6rem)]">3. Artisanal Grazing</h3>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span class="text-warmgold font-bold text-[clamp(0.85rem,1.8vh,1rem)]">Med: R130</span><span class="text-gray-400 text-[clamp(0.65rem,1.3vh,0.8rem)]">pp</span>
+                                <span class="text-gray-600">|</span>
+                                <span class="text-warmgold font-bold text-[clamp(0.85rem,1.8vh,1rem)]">Lrg: R180</span><span class="text-gray-400 text-[clamp(0.65rem,1.3vh,0.8rem)]">pp</span>
+                            </div>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-cheese course-icon"></i>
+                                <span class="course-title">Cheeses & Meats</span>
+                            </div>
+                            <p class="course-desc">Italian Salami, Parma Ham & Hickory Ham | Camembert, Gorgonzola, Smoked Mozzarella</p>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-martini-glass-empty course-icon"></i>
+                                <span class="course-title">Accompaniments</span>
+                            </div>
+                            <p class="course-desc">Marinated Olives | Fresh Berries | Rich Pesto | Artisanal Crackers & Crispy Bread Sticks</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-[2vw]">
+                            <button class="order-btn" onclick="selectMenu('Foodie Bar: 3. Artisanal Grazing (Medium)')">Book Medium</button>
+                            <button class="order-btn" onclick="selectMenu('Foodie Bar: 3. Artisanal Grazing (Large)')">Book Large</button>
+                        </div>
+                    </div>
 
-                <div class="card relative z-40">
-                    <div class="card-header !flex-col !items-start gap-1">
-                        <span class="item-title text-white">4. Nasi Goreng Bar</span>
-                        <div class="flex gap-2 w-full mt-0.5">
-                            <span class="item-price bg-warmgold/10 text-warmgold text-[clamp(0.7rem,1.4vh,0.85rem)]">Med: R130 pp</span>
-                            <span class="item-price text-[clamp(0.7rem,1.4vh,0.85rem)]">Large: R180 pp</span>
+                    <div class="card relative z-40 !mb-0">
+                        <div class="card-header-block">
+                            <h3 class="opt-title !text-[clamp(1.2rem,2.5vh,1.6rem)]">4. Nasi Goreng Bar</h3>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span class="text-warmgold font-bold text-[clamp(0.85rem,1.8vh,1rem)]">Med: R130</span><span class="text-gray-400 text-[clamp(0.65rem,1.3vh,0.8rem)]">pp</span>
+                                <span class="text-gray-600">|</span>
+                                <span class="text-warmgold font-bold text-[clamp(0.85rem,1.8vh,1rem)]">Lrg: R180</span><span class="text-gray-400 text-[clamp(0.65rem,1.3vh,0.8rem)]">pp</span>
+                            </div>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-bowl-rice course-icon"></i>
+                                <span class="course-title">The Base & Proteins</span>
+                            </div>
+                            <p class="course-desc">Authentic Balinese Fried Rice | Pan-Seared Tender Beef Strips & Tiger Prawns</p>
+                        </div>
+                        <div class="course-block">
+                            <div class="course-label-wrapper">
+                                <i class="fa-solid fa-leaf course-icon"></i>
+                                <span class="course-title">Sides & Condiments</span>
+                            </div>
+                            <p class="course-desc">Fresh Asian Vegetable Crunch Salad | House Chili Sambals & Crispy Shallots</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-[2vw]">
+                            <button class="order-btn" onclick="selectMenu('Foodie Bar: 4. Nasi Goreng Bar (Medium)')">Book Medium</button>
+                            <button class="order-btn" onclick="selectMenu('Foodie Bar: 4. Nasi Goreng Bar (Large)')">Book Large</button>
                         </div>
                     </div>
-                    <p class="desc-text"><span class="desc-label">The Base & Proteins:</span>Authentic Balinese Fried Rice | Pan-Seared Tender Beef Strips & Tiger Prawns</p>
-                    <p class="desc-text"><span class="desc-label">Sides & Condiments:</span>Fresh Asian Vegetable Crunch Salad | House Chili Sambals & Crispy Shallots</p>
-                    <button class="order-btn" onclick="selectMenu('Foodie Bar: 4. Nasi Goreng Bar')">Book This Bar</button>
                 </div>
                 <div class="page-number">10</div>
             </div>
@@ -450,38 +785,46 @@
         <!-- Index 11 : Convenience 1 (Chicken Meals) - 3 blocks -->
         <div class="page">
             <div class="page-content">
-                <div class="page-header pointer-events-none !mb-[1vh]">
-                    <h2 class="page-title">Convenience</h2>
-                    <h3 class="page-subtitle !pb-[1vh]">Chicken Meals</h3>
-                </div>
-                
-                <div class="card relative z-40 !py-[1.2vh] !mb-[0.8vh]">
-                    <h4 class="item-title text-white mb-0.5">Chicken Parmigiana</h4>
-                    <p class="desc-text !mb-[0.6vh]">Crumbed chicken fillets in a napoletana sauce, baked with mozzarella & parmesan cheese, with tagliatelle pasta & garden salad.</p>
-                    <div class="grid grid-cols-3 gap-[1vw]">
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Chicken Parmigiana (4) R520')">(4) R520</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Chicken Parmigiana (6) R750')">(6) R750</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Chicken Parmigiana (10) R1200')">(10) R1200</button>
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none !mb-[1vh]">
+                        <h2 class="page-title">Convenience</h2>
+                        <h3 class="page-subtitle !pb-[1vh]">Chicken Meals</h3>
                     </div>
-                </div>
-
-                <div class="card relative z-40 !py-[1.2vh] !mb-[0.8vh]">
-                    <h4 class="item-title text-white mb-0.5">Butter Chicken</h4>
-                    <p class="desc-text !mb-[0.6vh]">Chicken fillet strips in a mild, creamy Indian curry sauce with tomatoes & coriander, with basmati rice & sambals.</p>
-                    <div class="grid grid-cols-3 gap-[1vw]">
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Butter Chicken (4) R520')">(4) R520</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Butter Chicken (6) R750')">(6) R750</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Butter Chicken (10) R1200')">(10) R1200</button>
+                    
+                    <div class="card relative z-40 !py-[1.5vh] !mb-[0.8vh]">
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-1">Chicken Parmigiana</h4>
+                            <p class="course-desc">Crumbed chicken fillets in a napoletana sauce, baked with mozzarella & parmesan cheese, with tagliatelle pasta & garden salad.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Chicken Parmigiana (4) R520')">(4) R520</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Chicken Parmigiana (6) R750')">(6) R750</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Chicken Parmigiana (10) R1200')">(10) R1200</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="card relative z-40 !py-[1.2vh] !mb-0">
-                    <h4 class="item-title text-white mb-0.5">Thai Chicken Curry</h4>
-                    <p class="desc-text !mb-[0.6vh]">Chicken fillet strips, courgettes & mushrooms in a creamy Thai curry sauce, with rice noodles & Thai green salad.</p>
-                    <div class="grid grid-cols-3 gap-[1vw]">
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Chicken Curry (4) R520')">(4) R520</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Chicken Curry (6) R750')">(6) R750</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Chicken Curry (10) R1200')">(10) R1200</button>
+                    <div class="card relative z-40 !py-[1.5vh] !mb-[0.8vh]">
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-1">Butter Chicken</h4>
+                            <p class="course-desc">Chicken fillet strips in a mild, creamy Indian curry sauce with tomatoes & coriander, with basmati rice & sambals.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Butter Chicken (4) R520')">(4) R520</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Butter Chicken (6) R750')">(6) R750</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Butter Chicken (10) R1200')">(10) R1200</button>
+                        </div>
+                    </div>
+
+                    <div class="card relative z-40 !py-[1.5vh] !mb-0">
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-1">Thai Chicken Curry</h4>
+                            <p class="course-desc">Chicken fillet strips, courgettes & mushrooms in a creamy Thai curry sauce, with rice noodles & Thai green salad.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Chicken Curry (4) R520')">(4) R520</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Chicken Curry (6) R750')">(6) R750</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Chicken Curry (10) R1200')">(10) R1200</button>
+                        </div>
                     </div>
                 </div>
                 <div class="page-number">11</div>
@@ -491,38 +834,46 @@
         <!-- Index 12 : Convenience 2 (Chicken & Beef) - 3 blocks -->
         <div class="page">
             <div class="page-content">
-                <div class="page-header pointer-events-none !mb-[1vh]">
-                    <h2 class="page-title">Convenience</h2>
-                    <h3 class="page-subtitle !pb-[1vh]">Chicken & Beef</h3>
-                </div>
-                
-                <div class="card relative z-40 !py-[1.2vh] !mb-[0.8vh]">
-                    <h4 class="item-title text-white mb-0.5">Chicken Chow Mein</h4>
-                    <p class="desc-text !mb-[0.6vh]">Chicken fillet strips, spring onions, peppers, carrots & courgettes in a ginger & five spice oyster sauce with egg noodles.</p>
-                    <div class="grid grid-cols-3 gap-[1vw]">
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Chicken Chow Mein (4) R500')">(4) R500</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Chicken Chow Mein (6) R720')">(6) R720</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Chicken Chow Mein (10) R1150')">(10) R1150</button>
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none !mb-[1vh]">
+                        <h2 class="page-title">Convenience</h2>
+                        <h3 class="page-subtitle !pb-[1vh]">Chicken & Beef</h3>
                     </div>
-                </div>
-
-                <div class="card relative z-40 !py-[1.2vh] !mb-[0.8vh]">
-                    <h4 class="item-title text-white mb-0.5">Beef Madras Curry</h4>
-                    <p class="desc-text !mb-[0.6vh]">Beef cubes & potatoes in a medium spiced Indian curry sauce, with basmati rice & sambals.</p>
-                    <div class="grid grid-cols-3 gap-[1vw]">
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Madras Curry (4) R500')">(4) R500</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Madras Curry (6) R720')">(6) R720</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Madras Curry (10) R1400')">(10) R1400</button>
+                    
+                    <div class="card relative z-40 !py-[1.5vh] !mb-[0.8vh]">
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-1">Chicken Chow Mein</h4>
+                            <p class="course-desc">Chicken fillet strips, spring onions, peppers, carrots & courgettes in a ginger & five spice oyster sauce with egg noodles.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Chicken Chow Mein (4) R500')">(4) R500</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Chicken Chow Mein (6) R720')">(6) R720</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Chicken Chow Mein (10) R1150')">(10) R1150</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="card relative z-40 !py-[1.2vh] !mb-0">
-                    <h4 class="item-title text-white mb-0.5">Beef Lasagna</h4>
-                    <p class="desc-text !mb-[0.6vh]">Ground beef layered with pasta sheets, bechamel & mozzarella, with a garden salad.</p>
-                    <div class="grid grid-cols-3 gap-[1vw]">
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Lasagna (4) R540')">(4) R540</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Lasagna (6) R750')">(6) R750</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Lasagna (10) R1250')">(10) R1250</button>
+                    <div class="card relative z-40 !py-[1.5vh] !mb-[0.8vh]">
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-1">Beef Madras Curry</h4>
+                            <p class="course-desc">Beef cubes & potatoes in a medium spiced Indian curry sauce, with basmati rice & sambals.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Madras Curry (4) R500')">(4) R500</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Madras Curry (6) R720')">(6) R720</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Madras Curry (10) R1400')">(10) R1400</button>
+                        </div>
+                    </div>
+
+                    <div class="card relative z-40 !py-[1.5vh] !mb-0">
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-1">Beef Lasagna</h4>
+                            <p class="course-desc">Ground beef layered with pasta sheets, bechamel & mozzarella, with a garden salad.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Lasagna (4) R540')">(4) R540</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Lasagna (6) R750')">(6) R750</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Lasagna (10) R1250')">(10) R1250</button>
+                        </div>
                     </div>
                 </div>
                 <div class="page-number">12</div>
@@ -532,38 +883,46 @@
         <!-- Index 13 : Convenience 3 (Beef & Lamb) - 3 blocks -->
         <div class="page">
             <div class="page-content">
-                <div class="page-header pointer-events-none !mb-[1vh]">
-                    <h2 class="page-title">Convenience</h2>
-                    <h3 class="page-subtitle !pb-[1vh]">Beef & Lamb</h3>
-                </div>
-                
-                <div class="card relative z-40 !py-[1.2vh] !mb-[0.8vh]">
-                    <h4 class="item-title text-white mb-0.5">Beef Chow Mein</h4>
-                    <p class="desc-text !mb-[0.6vh]">Beef strips, spring onions, peppers, carrots & courgettes in a ginger & five spice oyster sauce with egg noodles.</p>
-                    <div class="grid grid-cols-3 gap-[1vw]">
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Chow Mein (4) R540')">(4) R540</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Chow Mein (6) R750')">(6) R750</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Chow Mein (10) R1250')">(10) R1250</button>
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none !mb-[1vh]">
+                        <h2 class="page-title">Convenience</h2>
+                        <h3 class="page-subtitle !pb-[1vh]">Beef & Lamb</h3>
                     </div>
-                </div>
-
-                <div class="card relative z-40 !py-[1.2vh] !mb-[0.8vh]">
-                    <h4 class="item-title text-white mb-0.5">Beef Enchiladas</h4>
-                    <p class="desc-text !mb-[0.6vh]">Spicy beef & bean wraps topped with Mexican sauce, with grilled corn & bean salad, guacamole & sour cream.</p>
-                    <div class="grid grid-cols-3 gap-[1vw]">
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Enchiladas (4) R500')">(4) R500</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Enchiladas (6) R750')">(6) R750</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Enchiladas (10) R1400')">(10) R1400</button>
+                    
+                    <div class="card relative z-40 !py-[1.5vh] !mb-[0.8vh]">
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-1">Beef Chow Mein</h4>
+                            <p class="course-desc">Beef strips, spring onions, peppers, carrots & courgettes in a ginger & five spice oyster sauce with egg noodles.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Chow Mein (4) R540')">(4) R540</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Chow Mein (6) R750')">(6) R750</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Chow Mein (10) R1250')">(10) R1250</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="card relative z-40 !py-[1.2vh] !mb-0">
-                    <h4 class="item-title text-white mb-0.5">Moroccan Lamb Tagine</h4>
-                    <p class="desc-text !mb-[0.6vh]">Lamb cubes with chickpeas, raisins & almonds, with cous cous & sauteed veggies.</p>
-                    <div class="grid grid-cols-3 gap-[1vw]">
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Moroccan Lamb Tagine (4) R680')">(4) R680</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Moroccan Lamb Tagine (6) R990')">(6) R990</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Moroccan Lamb Tagine (10) R1600')">(10) R1600</button>
+                    <div class="card relative z-40 !py-[1.5vh] !mb-[0.8vh]">
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-1">Beef Enchiladas</h4>
+                            <p class="course-desc">Spicy beef & bean wraps topped with Mexican sauce, with grilled corn & bean salad, guacamole & sour cream.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Enchiladas (4) R500')">(4) R500</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Enchiladas (6) R750')">(6) R750</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Beef Enchiladas (10) R1400')">(10) R1400</button>
+                        </div>
+                    </div>
+
+                    <div class="card relative z-40 !py-[1.5vh] !mb-0">
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-1">Moroccan Lamb Tagine</h4>
+                            <p class="course-desc">Lamb cubes with chickpeas, raisins & almonds, with cous cous & sauteed veggies.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Moroccan Lamb Tagine (4) R680')">(4) R680</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Moroccan Lamb Tagine (6) R990')">(6) R990</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Moroccan Lamb Tagine (10) R1600')">(10) R1600</button>
+                        </div>
                     </div>
                 </div>
                 <div class="page-number">13</div>
@@ -573,38 +932,46 @@
         <!-- Index 14 : Convenience 4 (Lamb & Seafood) - 3 blocks -->
         <div class="page">
             <div class="page-content">
-                <div class="page-header pointer-events-none !mb-[1vh]">
-                    <h2 class="page-title">Convenience</h2>
-                    <h3 class="page-subtitle !pb-[1vh]">Lamb & Seafood</h3>
-                </div>
-                
-                <div class="card relative z-40 !py-[1.2vh] !mb-[0.8vh]">
-                    <h4 class="item-title text-white mb-0.5">Lamb Rogan Josh</h4>
-                    <p class="desc-text !mb-[0.6vh]">Lamb cubes & potatoes in a rich Indian red curry sauce with tomatoes & coriander, served with basmati rice & sambals.</p>
-                    <div class="grid grid-cols-3 gap-[1vw]">
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Lamb Rogan Josh (4) R680')">(4) R680</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Lamb Rogan Josh (6) R990')">(6) R990</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Lamb Rogan Josh (10) R1600')">(10) R1600</button>
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none !mb-[1vh]">
+                        <h2 class="page-title">Convenience</h2>
+                        <h3 class="page-subtitle !pb-[1vh]">Lamb & Seafood</h3>
                     </div>
-                </div>
-
-                <div class="card relative z-40 !py-[1.2vh] !mb-[0.8vh]">
-                    <h4 class="item-title text-white mb-0.5">Greek Lamb Casserole</h4>
-                    <p class="desc-text !mb-[0.6vh]">Lamb cubes with tomatoes, peppers, olives, feta, mint & parsley, with lemon & herb orzo pasta.</p>
-                    <div class="grid grid-cols-3 gap-[1vw]">
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Greek Lamb Casserole (4) R640')">(4) R640</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Greek Lamb Casserole (6) R990')">(6) R990</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Greek Lamb Casserole (10) R1600')">(10) R1600</button>
+                    
+                    <div class="card relative z-40 !py-[1.5vh] !mb-[0.8vh]">
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-1">Lamb Rogan Josh</h4>
+                            <p class="course-desc">Lamb cubes & potatoes in a rich Indian red curry sauce with tomatoes & coriander, served with basmati rice & sambals.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Lamb Rogan Josh (4) R680')">(4) R680</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Lamb Rogan Josh (6) R990')">(6) R990</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Lamb Rogan Josh (10) R1600')">(10) R1600</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="card relative z-40 !py-[1.2vh] !mb-0">
-                    <h4 class="item-title text-white mb-0.5">Paella</h4>
-                    <p class="desc-text !mb-[0.6vh]">Spanish rice dish with prawns, mussels, calamari, chorizo & peas, with garden salad.</p>
-                    <div class="grid grid-cols-3 gap-[1vw]">
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Paella (4) R680')">(4) R680</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Paella (6) R990')">(6) R990</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Paella (10) R1600')">(10) R1600</button>
+                    <div class="card relative z-40 !py-[1.5vh] !mb-[0.8vh]">
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-1">Greek Lamb Casserole</h4>
+                            <p class="course-desc">Lamb cubes with tomatoes, peppers, olives, feta, mint & parsley, with lemon & herb orzo pasta.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Greek Lamb Casserole (4) R640')">(4) R640</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Greek Lamb Casserole (6) R990')">(6) R990</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Greek Lamb Casserole (10) R1600')">(10) R1600</button>
+                        </div>
+                    </div>
+
+                    <div class="card relative z-40 !py-[1.5vh] !mb-0">
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-1">Paella</h4>
+                            <p class="course-desc">Spanish rice dish with prawns, mussels, calamari, chorizo & peas, with garden salad.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Paella (4) R680')">(4) R680</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Paella (6) R990')">(6) R990</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Paella (10) R1600')">(10) R1600</button>
+                        </div>
                     </div>
                 </div>
                 <div class="page-number">14</div>
@@ -614,38 +981,46 @@
         <!-- Index 15 : Convenience 5 (Seafood & Veg) - 3 blocks -->
         <div class="page">
             <div class="page-content">
-                <div class="page-header pointer-events-none !mb-[1vh]">
-                    <h2 class="page-title">Convenience</h2>
-                    <h3 class="page-subtitle !pb-[1vh]">Seafood & Vegetarian</h3>
-                </div>
-                
-                <div class="card relative z-40 !py-[1.2vh] !mb-[0.8vh]">
-                    <h4 class="item-title text-white mb-0.5">Thai Prawn Curry</h4>
-                    <p class="desc-text !mb-[0.6vh]">Prawns in a creamy Thai curry sauce, with rice noodles & Thai green salad.</p>
-                    <div class="grid grid-cols-3 gap-[1vw]">
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Prawn Curry (4) R680')">(4) R680</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Prawn Curry (6) R990')">(6) R990</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Prawn Curry (10) R1600')">(10) R1600</button>
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none !mb-[1vh]">
+                        <h2 class="page-title">Convenience</h2>
+                        <h3 class="page-subtitle !pb-[1vh]">Seafood & Vegetarian</h3>
                     </div>
-                </div>
-
-                <div class="card relative z-40 !py-[1.2vh] !mb-[0.8vh]">
-                    <h4 class="item-title text-white mb-0.5">Melanzane</h4>
-                    <p class="desc-text !mb-[0.6vh]">Roasted aubergine bake, layered with napoletana sauce, mozzarella cheese and parmesan, with tagliatelle pasta & garden salad.</p>
-                    <div class="grid grid-cols-3 gap-[1vw]">
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Melanzane (4) R440')">(4) R440</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Melanzane (6) R630')">(6) R630</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Melanzane (10) R1000')">(10) R1000</button>
+                    
+                    <div class="card relative z-40 !py-[1.5vh] !mb-[0.8vh]">
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-1">Thai Prawn Curry</h4>
+                            <p class="course-desc">Prawns in a creamy Thai curry sauce, with rice noodles & Thai green salad.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Prawn Curry (4) R680')">(4) R680</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Prawn Curry (6) R990')">(6) R990</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Prawn Curry (10) R1600')">(10) R1600</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="card relative z-40 !py-[1.2vh] !mb-0">
-                    <h4 class="item-title text-white mb-0.5">Nasi Goreng</h4>
-                    <p class="desc-text !mb-[0.6vh]">Indonesian rice dish with vegetables, sweet & spicy soy, topped with crispy onions, & garden salad.</p>
-                    <div class="grid grid-cols-3 gap-[1vw]">
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Nasi Goreng (4) R440')">(4) R440</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Nasi Goreng (6) R630')">(6) R630</button>
-                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Nasi Goreng (10) R1000')">(10) R1000</button>
+                    <div class="card relative z-40 !py-[1.5vh] !mb-[0.8vh]">
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-1">Melanzane</h4>
+                            <p class="course-desc">Roasted aubergine bake, layered with napoletana sauce, mozzarella cheese and parmesan, with tagliatelle pasta & garden salad.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Melanzane (4) R440')">(4) R440</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Melanzane (6) R630')">(6) R630</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Melanzane (10) R1000')">(10) R1000</button>
+                        </div>
+                    </div>
+
+                    <div class="card relative z-40 !py-[1.5vh] !mb-0">
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-1">Nasi Goreng</h4>
+                            <p class="course-desc">Indonesian rice dish with vegetables, sweet & spicy soy, topped with crispy onions, & garden salad.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Nasi Goreng (4) R440')">(4) R440</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Nasi Goreng (6) R630')">(6) R630</button>
+                            <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Nasi Goreng (10) R1000')">(10) R1000</button>
+                        </div>
                     </div>
                 </div>
                 <div class="page-number">15</div>
@@ -655,31 +1030,34 @@
         <!-- Index 16 : Convenience 6 (Vegetarian + Info block) -->
         <div class="page">
             <div class="page-content">
-                <div class="page-header pointer-events-none !mb-[1vh]">
-                    <h2 class="page-title">Convenience</h2>
-                    <h3 class="page-subtitle !pb-[1vh]">Vegetarian (Cont.)</h3>
-                </div>
-                
-                <div class="card relative z-40 !py-[1.5vh] !mb-[2vh]">
-                    <h4 class="item-title text-white mb-0.5">Thai Vegetable Curry</h4>
-                    <p class="desc-text !mb-[0.8vh]">Courgettes, baby corn, green beans & mushrooms in a creamy Thai curry sauce, with rice noodles & Thai green salad.</p>
-                    <div class="grid grid-cols-3 gap-[1vw]">
-                        <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Vegetable Curry (4) R440')">(4) R440</button>
-                        <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Vegetable Curry (6) R630')">(6) R630</button>
-                        <button class="order-btn !mt-0 !py-[1vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Vegetable Curry (10) R1000')">(10) R1000</button>
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none !mb-[1vh]">
+                        <h2 class="page-title">Convenience</h2>
+                        <h3 class="page-subtitle !pb-[1vh]">Vegetarian (Cont.)</h3>
                     </div>
-                </div>
+                    
+                    <div class="card relative z-40 !py-[2vh] !mb-[2vh]">
+                        <div class="course-block !mb-4">
+                            <h4 class="opt-title !text-[clamp(1.2rem,2.4vh,1.6rem)] !mb-1">Thai Vegetable Curry</h4>
+                            <p class="course-desc">Courgettes, baby corn, green beans & mushrooms in a creamy Thai curry sauce, with rice noodles & Thai green salad.</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[1.2vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Vegetable Curry (4) R440')">(4) R440</button>
+                            <button class="order-btn !mt-0 !py-[1.2vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Vegetable Curry (6) R630')">(6) R630</button>
+                            <button class="order-btn !mt-0 !py-[1.2vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="selectMenu('Convenience: Thai Vegetable Curry (10) R1000')">(10) R1000</button>
+                        </div>
+                    </div>
 
-                <div class="card relative z-40 !border-warmgold/30 !bg-warmgold/5 !py-[2.5vh]">
-                    <div class="flex items-center gap-3 mb-3">
-                        <i class="fa-solid fa-box-open text-warmgold text-2xl"></i>
-                        <h4 class="item-title !text-warmgold !mb-0 !text-[clamp(1rem,2.2vh,1.3rem)]">Meal Information</h4>
+                    <div class="card relative z-40 !border-warmgold/30 !bg-[#1c1813] !py-[3vh]">
+                        <div class="flex items-center gap-3 mb-4">
+                            <i class="fa-solid fa-box-open text-warmgold text-2xl"></i>
+                            <h4 class="opt-title !text-warmgold !mb-0 !text-[clamp(1.2rem,2.4vh,1.5rem)]">Meal Information</h4>
+                        </div>
+                        <p class="course-desc"><strong>Freshly Prepared:</strong> All convenience meals are cooked from scratch using the finest quality ingredients.</p>
+                        <div class="w-full h-px bg-warmgold/20 my-4"></div>
+                        <p class="course-desc"><strong>Heating & Storage:</strong> Delivered in microwave & oven-safe containers. Keep refrigerated and consume within 3 days.</p>
                     </div>
-                    <p class="desc-text text-gray-300"><strong>Freshly Prepared:</strong> All convenience meals are cooked from scratch using the finest quality ingredients.</p>
-                    <div class="w-full h-px bg-warmgold/20 my-3"></div>
-                    <p class="desc-text text-gray-300"><strong>Heating & Storage:</strong> Delivered in microwave & oven-safe containers. Keep refrigerated and consume within 3 days.</p>
                 </div>
-                
                 <div class="page-number">16</div>
             </div>
         </div>
@@ -687,39 +1065,41 @@
         <!-- Index 17 : Harvest Tables (1 & 2) -->
         <div class="page">
             <div class="page-content">
-                <div class="page-header pointer-events-none">
-                    <h2 class="page-title">Harvest Tables</h2>
-                    <h3 class="page-subtitle">Groups of 20+ Guests</h3>
-                </div>
-                
-                <div class="card relative z-40">
-                    <div class="card-header !border-b-0 !pb-0 !mb-0">
-                        <div>
-                            <span class="desc-label !text-gray-400 !text-[10px]">Standard Spread</span>
-                            <span class="item-title text-white block mt-0.5">Earth & Vine</span>
-                        </div>
-                        <span class="item-price">R160 pp</span>
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none">
+                        <h2 class="page-title">Harvest Tables</h2>
+                        <h3 class="page-subtitle">Groups of 20+ Guests</h3>
                     </div>
-                    <div class="w-full h-px bg-white/10 my-1.5"></div>
-                    <p class="desc-text text-left">
-                        <strong>Assorted Cheeses:</strong> Brie, Camembert, Blue, Gouda, Mozzarella, Cream Cheese, Fruits, Roasted & Pickled Vegetables, Olives, Breads, Crackers, Hummus, Pesto, Preserves & Berries.
-                    </p>
-                    <button class="order-btn" onclick="selectMenu('Harvest Table: Earth & Vine')">Book Harvest Table</button>
-                </div>
+                    
+                    <div class="card relative z-40">
+                        <div class="card-header-block !mb-3">
+                            <span class="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Standard Spread</span>
+                            <h3 class="opt-title !mt-0.5">Earth & Vine</h3>
+                            <div class="flex items-baseline gap-1.5 mt-1">
+                                <span class="text-warmgold font-bold text-[clamp(1rem,2vh,1.2rem)]">R160</span>
+                                <span class="text-gray-400 text-[clamp(0.75rem,1.5vh,0.9rem)]">per person</span>
+                            </div>
+                        </div>
+                        <div class="course-block">
+                            <p class="course-desc"><strong>Assorted Cheeses:</strong> Brie, Camembert, Blue, Gouda, Mozzarella, Cream Cheese, Fruits, Roasted & Pickled Vegetables, Olives, Breads, Crackers, Hummus, Pesto, Preserves & Berries.</p>
+                        </div>
+                        <button class="order-btn" onclick="selectMenu('Harvest Table: Earth & Vine')">Book Harvest Table</button>
+                    </div>
 
-                <div class="card relative z-40">
-                    <div class="card-header !border-b-0 !pb-0 !mb-0">
-                        <div>
-                            <span class="desc-label !text-gray-400 !text-[10px]">Deluxe Spread</span>
-                            <span class="item-title text-white block mt-0.5">Farmer's Yield</span>
+                    <div class="card relative z-40">
+                        <div class="card-header-block !mb-3">
+                            <span class="text-gray-400 text-[10px] uppercase tracking-wider font-bold">Deluxe Spread</span>
+                            <h3 class="opt-title !mt-0.5">Farmer's Yield</h3>
+                            <div class="flex items-baseline gap-1.5 mt-1">
+                                <span class="text-warmgold font-bold text-[clamp(1rem,2vh,1.2rem)]">R230</span>
+                                <span class="text-gray-400 text-[clamp(0.75rem,1.5vh,0.9rem)]">per person</span>
+                            </div>
                         </div>
-                        <span class="item-price">R230 pp</span>
+                        <div class="course-block">
+                            <p class="course-desc"><strong>Assorted Cheeses:</strong> Brie, Camembert, Blue, Gouda, Mozzarella, Cream Cheese, Italian Salami, Smoked Ham, Beef Pastrami, Fruits, Roasted & Pickled Vegetables, Olives, Breads & Crackers, Hummus, Pesto, Preserves & Berries.</p>
+                        </div>
+                        <button class="order-btn" onclick="selectMenu('Harvest Table: Farmer\'s Yield')">Book Harvest Table</button>
                     </div>
-                    <div class="w-full h-px bg-white/10 my-1.5"></div>
-                    <p class="desc-text text-left">
-                        <strong>Assorted Cheeses:</strong> Brie, Camembert, Blue, Gouda, Mozzarella, Cream Cheese, Italian Salami, Smoked Ham, Beef Pastrami, Fruits, Roasted & Pickled Vegetables, Olives, Breads & Crackers, Hummus, Pesto, Preserves & Berries.
-                    </p>
-                    <button class="order-btn" onclick="selectMenu('Harvest Table: Farmer\'s Yield')">Book Harvest Table</button>
                 </div>
                 <div class="page-number">17</div>
             </div>
@@ -728,24 +1108,27 @@
         <!-- Index 18 : Harvest Tables (3) -->
         <div class="page">
             <div class="page-content">
-                <div class="page-header pointer-events-none">
-                    <h2 class="page-title">Harvest Tables</h2>
-                    <h3 class="page-subtitle">Groups of 20+ Guests</h3>
-                </div>
-                
-                <div class="card !border-warmgold/40 relative z-40">
-                    <div class="card-header !border-b-0 !pb-0 !mb-0">
-                        <div>
-                            <span class="desc-label !text-warmgold !text-[10px]">Ultimate Spread</span>
-                            <span class="item-title text-white block mt-0.5 !text-[clamp(1rem,2vh,1.3rem)]">Forager's Table</span>
-                        </div>
-                        <span class="item-price !bg-warmgold !text-black">R300 pp</span>
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none">
+                        <h2 class="page-title">Harvest Tables</h2>
+                        <h3 class="page-subtitle">Groups of 20+ Guests</h3>
                     </div>
-                    <div class="w-full h-px bg-warmgold/20 my-1.5"></div>
-                    <p class="desc-text text-left">
-                        <strong>Assorted Cheeses:</strong> Brie, Camembert, Blue, Gouda, Cream Cheese, Italian Salami, Smoked Ham, Grilled Beef Fillet & Mustard, Seared Tuna & Yuzu, Fruits, Asian Rainbow Salad, Tabbouleh Salad, Olives & Pickled Vegetables, Breads & Crackers, Hummus, Pesto, Preserves, Nuts & Berries.
-                    </p>
-                    <button class="order-btn" onclick="selectMenu('Harvest Table: Forager\'s Table')">Book Harvest Table</button>
+                    
+                    <div class="card !border-warmgold/40 relative z-40 !bg-[#1a1713]">
+                        <div class="card-header-block !mb-4">
+                            <span class="text-warmgold text-[10px] uppercase tracking-wider font-bold">Ultimate Spread</span>
+                            <h3 class="opt-title !mt-0.5 !text-[clamp(1.6rem,3.2vh,2rem)]">Forager's Table</h3>
+                            <div class="flex items-baseline gap-1.5 mt-1">
+                                <span class="text-warmgold font-bold text-[clamp(1.1rem,2.2vh,1.4rem)]">R300</span>
+                                <span class="text-gray-400 text-[clamp(0.75rem,1.5vh,0.9rem)]">per person</span>
+                            </div>
+                        </div>
+                        <div class="w-full h-px bg-warmgold/20 mb-4"></div>
+                        <div class="course-block !mb-6">
+                            <p class="course-desc"><strong>Assorted Cheeses:</strong> Brie, Camembert, Blue, Gouda, Cream Cheese, Italian Salami, Smoked Ham, Grilled Beef Fillet & Mustard, Seared Tuna & Yuzu, Fruits, Asian Rainbow Salad, Tabbouleh Salad, Olives & Pickled Vegetables, Breads & Crackers, Hummus, Pesto, Preserves, Nuts & Berries.</p>
+                        </div>
+                        <button class="order-btn !py-[1.5vh] !text-[0.9rem]" onclick="selectMenu('Harvest Table: Forager\'s Table')">Book Harvest Table</button>
+                    </div>
                 </div>
                 <div class="page-number">18</div>
             </div>
@@ -753,7 +1136,7 @@
 
         <!-- Index 19 : Gallery 1 -->
         <div class="page">
-            <div class="page-content bg-black !p-0">
+            <div class="page-content bg-black !p-0 !justify-center">
                 <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260827_175438.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">19</div>
@@ -762,7 +1145,7 @@
 
         <!-- Index 20 : Gallery 2 -->
         <div class="page">
-            <div class="page-content bg-black !p-0">
+            <div class="page-content bg-black !p-0 !justify-center">
                 <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260711_134723.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">20</div>
@@ -771,7 +1154,7 @@
 
         <!-- Index 21 : Gallery 3 -->
         <div class="page">
-            <div class="page-content bg-black !p-0">
+            <div class="page-content bg-black !p-0 !justify-center">
                 <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250907_092046.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">21</div>
@@ -780,7 +1163,7 @@
 
         <!-- Index 22 : Gallery 4 -->
         <div class="page">
-            <div class="page-content bg-black !p-0">
+            <div class="page-content bg-black !p-0 !justify-center">
                 <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250428_191038-scaled.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">22</div>
@@ -789,7 +1172,7 @@
 
         <!-- Index 23 : Gallery 5 -->
         <div class="page">
-            <div class="page-content bg-black !p-0">
+            <div class="page-content bg-black !p-0 !justify-center">
                 <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250604_183025-scaled.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">23</div>
@@ -798,7 +1181,7 @@
 
         <!-- Index 24 : Gallery 6 -->
         <div class="page">
-            <div class="page-content bg-black !p-0">
+            <div class="page-content bg-black !p-0 !justify-center">
                 <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20251105_133224-scaled.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">24</div>
@@ -807,7 +1190,7 @@
 
         <!-- Index 25 : Gallery 7 -->
         <div class="page">
-            <div class="page-content bg-black !p-0">
+            <div class="page-content bg-black !p-0 !justify-center">
                 <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250905_200157-scaled.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">25</div>
@@ -816,7 +1199,7 @@
 
         <!-- Index 26 : Gallery 8 -->
         <div class="page">
-            <div class="page-content bg-black !p-0">
+            <div class="page-content bg-black !p-0 !justify-center">
                 <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250622_123024.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">26</div>
@@ -825,7 +1208,7 @@
 
         <!-- Index 27 : Gallery 9 -->
         <div class="page">
-            <div class="page-content bg-black !p-0">
+            <div class="page-content bg-black !p-0 !justify-center">
                 <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250428_184235-scaled.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">27</div>
@@ -834,7 +1217,7 @@
 
         <!-- Index 28 : Gallery 10 -->
         <div class="page">
-            <div class="page-content bg-black !p-0">
+            <div class="page-content bg-black !p-0 !justify-center">
                 <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260214_192611.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">28</div>
@@ -843,7 +1226,7 @@
 
         <!-- Index 29 : Gallery 11 -->
         <div class="page">
-            <div class="page-content bg-black !p-0">
+            <div class="page-content bg-black !p-0 !justify-center">
                 <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260711_194453-scaled.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">29</div>
@@ -852,7 +1235,7 @@
 
         <!-- Index 30 : Gallery 12 -->
         <div class="page">
-            <div class="page-content bg-black !p-0">
+            <div class="page-content bg-black !p-0 !justify-center">
                 <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260828_121201.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">30</div>
@@ -861,7 +1244,7 @@
 
         <!-- Index 31 : Gallery 13 -->
         <div class="page">
-            <div class="page-content bg-black !p-0">
+            <div class="page-content bg-black !p-0 !justify-center">
                 <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260901_1117481.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">31</div>
@@ -870,7 +1253,7 @@
 
         <!-- Index 32 : Gallery 14 -->
         <div class="page">
-            <div class="page-content bg-black !p-0">
+            <div class="page-content bg-black !p-0 !justify-center">
                 <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260831_163358-scaled.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">32</div>
@@ -879,95 +1262,97 @@
 
         <!-- Index 33 : Order Booking Form -->
         <div class="page">
-            <div class="page-content flex flex-col">
-                <div class="page-header pointer-events-none">
-                    <h2 class="page-title">Booking Form</h2>
-                    <h3 class="page-subtitle">Send via WhatsApp</h3>
+            <div class="page-content">
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none">
+                        <h2 class="page-title">Booking Form</h2>
+                        <h3 class="page-subtitle">Send via WhatsApp</h3>
+                    </div>
+                    
+                    <form id="flipbook-order-form" class="flex-1 flex flex-col justify-center space-y-1.5 w-full px-2 box-border relative z-50" onsubmit="submitOrderForm(event)">
+                        
+                        <div class="flex flex-col w-full">
+                            <label class="form-label">Selected Menu</label>
+                            <input type="text" id="order-menu-selection" readonly class="!text-warmgold font-bold">
+                        </div>
+
+                        <div class="flex flex-col w-full">
+                            <label class="form-label">Your Name</label>
+                            <input type="text" id="order-name" required>
+                        </div>
+
+                        <div class="form-grid-3">
+                            <div class="flex flex-col min-w-0">
+                                <label class="form-label">Date</label>
+                                <input type="date" id="order-date" required>
+                            </div>
+                            <div class="flex flex-col min-w-0">
+                                <label class="form-label">Time</label>
+                                <input type="time" id="order-time" required>
+                            </div>
+                            <div class="flex flex-col min-w-0">
+                                <label class="form-label">Guests</label>
+                                <input type="number" id="order-guests" required min="1" class="text-center px-1">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col w-full min-w-0">
+                            <label class="form-label">Fulfillment</label>
+                            <select id="order-fulfillment" required>
+                                <option value="Local Delivery (Free)">Local Delivery (Free)</option>
+                                <option value="Self Collection (Berea)">Self Collection (Berea)</option>
+                                <option value="Standard Delivery (Other)">Standard Delivery (Other)</option>
+                                <option value="On-Site Catering">On-Site Catering</option>
+                            </select>
+                        </div>
+
+                        <div class="flex flex-col w-full">
+                            <label class="form-label">Address / Notes</label>
+                            <textarea id="order-notes" rows="2"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="mt-[1.5vh] w-full flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white py-[1.2vh] rounded-md font-bold tracking-wider text-[clamp(0.75rem,1.5vh,0.95rem)] transition shadow-lg border border-emerald-500 cursor-pointer">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>Send via WhatsApp</span>
+                        </button>
+                        
+                        <button type="button" onclick="prevPage()" class="mt-[1vh] text-gray-400 text-[clamp(0.6rem,1.2vh,0.8rem)] font-bold uppercase tracking-wider text-center w-full cursor-pointer">Cancel & Go Back</button>
+                    </form>
                 </div>
-                
-                <form id="flipbook-order-form" class="flex-1 flex flex-col justify-center space-y-1.5 w-full px-2 box-border relative z-50" onsubmit="submitOrderForm(event)">
-                    
-                    <div class="flex flex-col w-full">
-                        <label class="form-label">Selected Menu</label>
-                        <input type="text" id="order-menu-selection" readonly class="!text-warmgold font-bold">
-                    </div>
-
-                    <div class="flex flex-col w-full">
-                        <label class="form-label">Your Name</label>
-                        <input type="text" id="order-name" required>
-                    </div>
-
-                    <!-- FIXED GRID TO PREVENT CUTOFF -->
-                    <div class="form-grid-3">
-                        <div class="flex flex-col min-w-0">
-                            <label class="form-label">Date</label>
-                            <input type="date" id="order-date" required>
-                        </div>
-                        <div class="flex flex-col min-w-0">
-                            <label class="form-label">Time</label>
-                            <input type="time" id="order-time" required>
-                        </div>
-                        <div class="flex flex-col min-w-0">
-                            <label class="form-label">Guests</label>
-                            <input type="number" id="order-guests" required min="1" class="text-center px-1">
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col w-full min-w-0">
-                        <label class="form-label">Fulfillment</label>
-                        <select id="order-fulfillment" required>
-                            <option value="Local Delivery (Free)">Local Delivery (Free)</option>
-                            <option value="Self Collection (Berea)">Self Collection (Berea)</option>
-                            <option value="Standard Delivery (Other)">Standard Delivery (Other)</option>
-                            <option value="On-Site Catering">On-Site Catering</option>
-                        </select>
-                    </div>
-
-                    <div class="flex flex-col w-full">
-                        <label class="form-label">Address / Notes</label>
-                        <textarea id="order-notes" rows="2"></textarea>
-                    </div>
-                    
-                    <button type="submit" class="mt-[1vh] w-full flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white py-[1vh] rounded-md font-bold tracking-wider text-[clamp(0.75rem,1.5vh,0.95rem)] transition shadow-lg border border-emerald-500 cursor-pointer">
-                        <i class="fa-brands fa-whatsapp text-lg"></i>
-                        <span>Send via WhatsApp</span>
-                    </button>
-                    
-                    <button type="button" onclick="prevPage()" class="mt-[0.5vh] text-gray-400 text-[clamp(0.6rem,1.2vh,0.8rem)] font-bold uppercase tracking-wider text-center w-full cursor-pointer">Cancel & Go Back</button>
-                </form>
-                
                 <div class="page-number">33</div>
             </div>
         </div>
 
         <!-- Index 34 : Contact / Back Cover -->
         <div class="page">
-            <div class="page-content flex flex-col justify-center items-center text-center relative z-40">
-                <img src="https://www.privatechefanna.co.za/wp-content/uploads/2026/10/PCA-ROUND-WHITE.png" alt="Private Chef Anna Logo" class="w-32 h-32 sm:w-40 sm:h-40 mb-4 object-contain opacity-90 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] pointer-events-none" onerror="this.style.display='none';">
-                
-                <h2 class="font-serif text-[clamp(2.5rem,5vh,4rem)] text-white mb-3 leading-tight">Book Your<br>Experience</h2>
-                <div class="w-16 h-0.5 bg-warmgold mb-4 mx-auto"></div>
-                
-                <p class="text-gray-300 text-[clamp(0.9rem,1.8vh,1.2rem)] mb-6 max-w-[90%] leading-relaxed pointer-events-none">Curate your bespoke private dining experience today.</p>
-                
-                <div class="space-y-[1.5vh] w-full px-4 box-border">
-                    <a href="https://wa.me/27729308653" target="_blank" class="flex items-center justify-center space-x-3 bg-warmgold/10 py-[1.2vh] px-6 rounded-xl border border-warmgold/30 text-warmgold hover:bg-warmgold hover:text-black transition shadow-lg w-full">
-                        <i class="fa-brands fa-whatsapp text-[clamp(1.1rem,2.2vh,1.5rem)]"></i>
-                        <span class="text-[clamp(1rem,2vh,1.4rem)] tracking-wider font-bold">072 930 8653</span>
-                    </a>
+            <div class="page-content bg-[#121212]">
+                <div class="vertical-center-wrapper flex flex-col justify-center items-center text-center relative z-40">
+                    <img src="https://www.privatechefanna.co.za/wp-content/uploads/2026/10/PCA-ROUND-WHITE.png" alt="Private Chef Anna Logo" class="w-32 h-32 sm:w-40 sm:h-40 mb-4 object-contain opacity-90 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] pointer-events-none" onerror="this.style.display='none';">
                     
-                    <a href="mailto:info@privatechefanna.co.za" class="flex items-center justify-center space-x-3 text-gray-300 hover:text-warmgold transition text-[clamp(0.8rem,1.6vh,1.1rem)]">
-                        <i class="fa-solid fa-envelope text-xl w-6 text-center"></i>
-                        <span class="tracking-wider text-left">info@privatechefanna.co.za</span>
-                    </a>
+                    <h2 class="font-serif text-[clamp(2.5rem,5vh,4rem)] text-white mb-3 leading-tight">Book Your<br>Experience</h2>
+                    <div class="w-16 h-0.5 bg-warmgold mb-4 mx-auto"></div>
                     
-                    <a href="https://www.privatechefanna.co.za" target="_blank" class="flex items-center justify-center space-x-3 text-gray-300 hover:text-warmgold transition text-[clamp(0.8rem,1.6vh,1.1rem)]">
-                        <i class="fa-solid fa-globe text-xl w-6 text-center"></i>
-                        <span class="tracking-wider text-left">www.privatechefanna.co.za</span>
-                    </a>
+                    <p class="text-gray-300 text-[clamp(0.9rem,1.8vh,1.2rem)] mb-6 max-w-[90%] leading-relaxed pointer-events-none">Curate your bespoke private dining experience today.</p>
+                    
+                    <div class="space-y-[1.5vh] w-full px-4 box-border">
+                        <a href="https://wa.me/27729308653" target="_blank" class="flex items-center justify-center space-x-3 bg-warmgold/10 py-[1.2vh] px-6 rounded-xl border border-warmgold/30 text-warmgold hover:bg-warmgold hover:text-black transition shadow-lg w-full">
+                            <i class="fa-brands fa-whatsapp text-[clamp(1.1rem,2.2vh,1.5rem)]"></i>
+                            <span class="text-[clamp(1rem,2vh,1.4rem)] tracking-wider font-bold">072 930 8653</span>
+                        </a>
+                        
+                        <a href="mailto:info@privatechefanna.co.za" class="flex items-center justify-center space-x-3 text-gray-300 hover:text-warmgold transition text-[clamp(0.8rem,1.6vh,1.1rem)]">
+                            <i class="fa-solid fa-envelope text-xl w-6 text-center"></i>
+                            <span class="tracking-wider text-left">info@privatechefanna.co.za</span>
+                        </a>
+                        
+                        <a href="https://www.privatechefanna.co.za" target="_blank" class="flex items-center justify-center space-x-3 text-gray-300 hover:text-warmgold transition text-[clamp(0.8rem,1.6vh,1.1rem)]">
+                            <i class="fa-solid fa-globe text-xl w-6 text-center"></i>
+                            <span class="tracking-wider text-left">www.privatechefanna.co.za</span>
+                        </a>
+                    </div>
                 </div>
                 
-                <div class="absolute bottom-[2vh] left-0 right-0 text-center pointer-events-none">
+                <div class="absolute bottom-[2vh] left-0 right-0 text-center pointer-events-none z-50">
                     <div class="text-[clamp(0.6rem,1.2vh,0.75rem)] text-gray-600 uppercase tracking-widest font-semibold">
                         © 2026 Private Chef Anna
                     </div>
@@ -999,6 +1384,19 @@
                     page.classList.add('prev'); 
                 }
             });
+
+            // Update Navigation Arrows visibility
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            if(prevBtn) {
+                if (currentPage === 0) prevBtn.classList.add('hidden');
+                else prevBtn.classList.remove('hidden');
+            }
+            if(nextBtn) {
+                if (currentPage === totalPages - 1) nextBtn.classList.add('hidden');
+                else nextBtn.classList.remove('hidden');
+            }
         }
 
         updatePages();
@@ -1052,7 +1450,7 @@
         // Handle edge clicks via Javascript to prevent Z-index blocking over buttons
         book.addEventListener('click', (e) => {
             // Ignore click to turn page if they are interacting with buttons, inputs, links
-            if (e.target.closest('button, input, textarea, select, a, .index-link')) return;
+            if (e.target.closest('button, input, textarea, select, a, .index-link, .nav-arrow')) return;
             
             const rect = book.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -1061,12 +1459,12 @@
         });
 
         book.addEventListener('touchstart', e => {
-            if (e.target.closest('button, input, textarea, select, a, .index-link')) return;
+            if (e.target.closest('button, input, textarea, select, a, .index-link, .nav-arrow')) return;
             touchStartX = e.changedTouches[0].screenX;
         }, { passive: true });
 
         book.addEventListener('touchend', e => {
-            if (e.target.closest('button, input, textarea, select, a, .index-link')) return;
+            if (e.target.closest('button, input, textarea, select, a, .index-link, .nav-arrow')) return;
             touchEndX = e.changedTouches[0].screenX;
             handleSwipe();
         }, { passive: true });
