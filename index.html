@@ -158,6 +158,9 @@
 </head>
 <body>
 
+    <!-- Toast Notification for Add to Cart -->
+    <div id="toast" class="fixed top-[5vh] left-1/2 -translate-x-1/2 bg-warmgold text-black px-6 py-3 rounded-full font-bold text-[clamp(0.7rem,1.4vh,1rem)] z-[200] opacity-0 transition-opacity duration-300 pointer-events-none shadow-xl transform scale-95">Added to Order</div>
+
     <div class="book-container" id="book">
         
         <!-- Navigation Arrows Overlay -->
@@ -209,28 +212,32 @@
                     </div>
                     <div class="flex-1 flex flex-col justify-center space-y-1 relative z-40">
                         <div class="index-link" onclick="goToPage(3)">
-                            <span class="index-title font-serif">01. Private Dining</span>
+                            <span class="index-title font-serif">01. Superfood Menu</span>
                             <span class="index-pg">Pg. 3</span>
                         </div>
-                        <div class="index-link" onclick="goToPage(7)">
-                            <span class="index-title font-serif">02. Family Style</span>
-                            <span class="index-pg">Pg. 7</span>
+                        <div class="index-link" onclick="goToPage(8)">
+                            <span class="index-title font-serif">02. Private Dining</span>
+                            <span class="index-pg">Pg. 8</span>
                         </div>
-                        <div class="index-link" onclick="goToPage(9)">
-                            <span class="index-title font-serif">03. Foodie Bars</span>
-                            <span class="index-pg">Pg. 9</span>
+                        <div class="index-link" onclick="goToPage(12)">
+                            <span class="index-title font-serif">03. Family Style</span>
+                            <span class="index-pg">Pg. 12</span>
                         </div>
-                        <div class="index-link" onclick="goToPage(11)">
-                            <span class="index-title font-serif">04. Convenience</span>
-                            <span class="index-pg">Pg. 11</span>
+                        <div class="index-link" onclick="goToPage(14)">
+                            <span class="index-title font-serif">04. Foodie Bars</span>
+                            <span class="index-pg">Pg. 14</span>
                         </div>
-                        <div class="index-link" onclick="goToPage(17)">
-                            <span class="index-title font-serif">05. Harvest Tables</span>
-                            <span class="index-pg">Pg. 17</span>
+                        <div class="index-link" onclick="goToPage(16)">
+                            <span class="index-title font-serif">05. Convenience</span>
+                            <span class="index-pg">Pg. 16</span>
                         </div>
-                        <div class="index-link" onclick="goToPage(19)">
-                            <span class="index-title font-serif">06. Gallery</span>
-                            <span class="index-pg">Pg. 19</span>
+                        <div class="index-link" onclick="goToPage(22)">
+                            <span class="index-title font-serif">06. Harvest Tables</span>
+                            <span class="index-pg">Pg. 22</span>
+                        </div>
+                        <div class="index-link" onclick="goToPage(24)">
+                            <span class="index-title font-serif">07. Gallery</span>
+                            <span class="index-pg">Pg. 24</span>
                         </div>
                     </div>
                 </div>
@@ -238,7 +245,272 @@
             </div>
         </div>
 
-        <!-- Index 3 : Private Dining 2-Course (1 & 2) -->
+        <!-- Index 3 : Superfood Bowls 1 -->
+        <div class="page">
+            <div class="page-content">
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none !mb-[1vh]">
+                        <h2 class="page-title !text-[clamp(1.3rem,2.8vh,2rem)]">500ml Superfood Bowls</h2>
+                        <h3 class="page-subtitle !normal-case !tracking-wider">balanced meals | no heating required</h3>
+                        <div class="mt-[1vh] flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-clock text-warmgold text-[clamp(0.6rem,1.2vh,0.8rem)]"></i>
+                            <span class="text-[clamp(0.55rem,1.1vh,0.75rem)] text-gray-400 italic">Tue & Thu Only. Order by 9am for same-day.</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card relative z-40 !py-[1.5vh] !mb-[0.8vh]">
+                        <div class="course-block !mb-2">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-0.5">Thai Bowl</h4>
+                            <p class="course-desc">Grilled chicken / beef strips in Thai coconut sauce, rice noodles, edamame, red cabbage, carrots, papaya, pak choi, spring onion, sesame seeds, yuzu dressing.</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)] flex flex-col items-center justify-center" onclick="addSuperfood('Thai Bowl (Chicken)', 95)"><span>Chicken</span><span class="text-white">R95</span></button>
+                            <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)] flex flex-col items-center justify-center" onclick="addSuperfood('Thai Bowl (Beef)', 115)"><span>Beef</span><span class="text-white">R115</span></button>
+                        </div>
+                    </div>
+
+                    <div class="card relative z-40 !py-[1.5vh] !mb-[0.8vh]">
+                        <div class="course-block !mb-2">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-0.5">Korean Bowl</h4>
+                            <p class="course-desc">Grilled chicken / beef strips in Gochujang sauce, brown rice, edamame, avo, radish, carrots, cucumber, pak choi, spring onion, sesame seeds, apple cider dressing.</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)] flex flex-col items-center justify-center" onclick="addSuperfood('Korean Bowl (Chicken)', 95)"><span>Chicken</span><span class="text-white">R95</span></button>
+                            <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)] flex flex-col items-center justify-center" onclick="addSuperfood('Korean Bowl (Beef)', 115)"><span>Beef</span><span class="text-white">R115</span></button>
+                        </div>
+                    </div>
+
+                    <div class="card relative z-40 !py-[1.5vh] !mb-0">
+                        <div class="course-block !mb-2">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-0.5">Lebanese Bowl</h4>
+                            <p class="course-desc">Za'atar spiced chicken / beef strips, roasted chickpeas, roasted almonds, bulgur wheat, tomatoes, cucumber, rocket, pickled red onion, lemon & herb yoghurt dressing.</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)] flex flex-col items-center justify-center" onclick="addSuperfood('Lebanese Bowl (Chicken)', 95)"><span>Chicken</span><span class="text-white">R95</span></button>
+                            <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)] flex flex-col items-center justify-center" onclick="addSuperfood('Lebanese Bowl (Beef)', 115)"><span>Beef</span><span class="text-white">R115</span></button>
+                        </div>
+                    </div>
+
+                    <button onclick="goToPage(7)" class="w-full mt-[1.5vh] bg-emerald-600/20 border border-emerald-500 text-emerald-400 py-[1vh] rounded font-bold text-[clamp(0.65rem,1.3vh,0.85rem)] flex items-center justify-center gap-2 transition hover:bg-emerald-600 hover:text-white">
+                        <i class="fa-solid fa-cart-shopping"></i> View Superfood Order
+                    </button>
+                </div>
+                <div class="page-number">3</div>
+            </div>
+        </div>
+
+        <!-- Index 4 : Superfood 2 -->
+        <div class="page">
+            <div class="page-content">
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none !mb-[1vh]">
+                        <h2 class="page-title !text-[clamp(1.3rem,2.8vh,2rem)]">500ml Superfood Bowls</h2>
+                        <h3 class="page-subtitle !normal-case !tracking-wider">balanced meals | no heating required</h3>
+                    </div>
+                    
+                    <div class="card relative z-40 !py-[1.5vh] !mb-[0.8vh]">
+                        <div class="course-block !mb-2">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-0.5">Summer Bowl</h4>
+                            <p class="course-desc">Grilled chicken / beef strips, feta, quinoa, papaya, berries, red cabbage, cucumber, rocket, lentil sprouts, chia seeds, pecan nuts, lemon & herb yoghurt dressing.</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-[1.5vw]">
+                            <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)] flex flex-col items-center justify-center" onclick="addSuperfood('Summer Bowl (Chicken)', 95)"><span>Chicken</span><span class="text-white">R95</span></button>
+                            <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)] flex flex-col items-center justify-center" onclick="addSuperfood('Summer Bowl (Beef)', 115)"><span>Beef</span><span class="text-white">R115</span></button>
+                        </div>
+                    </div>
+
+                    <div class="card relative z-40 !py-[1.5vh] !mb-[0.8vh]">
+                        <div class="course-block !mb-2">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-0.5">Seared Tuna Bowl</h4>
+                            <p class="course-desc">Seared tuna, black rice, edamame, avo, radish, red cabbage, carrots, cucumber, pak choi, spring onion, sesame seeds, yuzu dressing.</p>
+                        </div>
+                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)] flex justify-center items-center gap-2" onclick="addSuperfood('Seared Tuna Bowl', 130)"><span class="text-white">R130</span></button>
+                    </div>
+
+                    <div class="card relative z-40 !py-[1.5vh] !mb-0">
+                        <div class="course-block !mb-2">
+                            <h4 class="opt-title !text-[clamp(1.1rem,2.2vh,1.4rem)] !mb-0.5">Prawn Bowl</h4>
+                            <p class="course-desc">Steamed prawns, rice noodles, edamame, peanuts, mango, radish, carrots, cucumber, pak choi, spring onion, sesame seeds, yuzu dressing.</p>
+                        </div>
+                        <button class="order-btn !mt-0 !py-[0.8vh] !text-[clamp(0.55rem,1.1vh,0.75rem)] flex justify-center items-center gap-2" onclick="addSuperfood('Prawn Bowl', 130)"><span class="text-white">R130</span></button>
+                    </div>
+
+                    <button onclick="goToPage(7)" class="w-full mt-[1.5vh] bg-emerald-600/20 border border-emerald-500 text-emerald-400 py-[1vh] rounded font-bold text-[clamp(0.65rem,1.3vh,0.85rem)] flex items-center justify-center gap-2 transition hover:bg-emerald-600 hover:text-white shrink-0">
+                        <i class="fa-solid fa-cart-shopping"></i> View Superfood Order
+                    </button>
+                </div>
+                <div class="page-number">4</div>
+            </div>
+        </div>
+
+        <!-- Index 5 : Superfood 3 Veggie -->
+        <div class="page">
+            <div class="page-content">
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none !mb-[1vh]">
+                        <h2 class="page-title !text-[clamp(1.3rem,2.8vh,2rem)]">Veggie Bowls</h2>
+                        <h3 class="page-subtitle !normal-case !tracking-wider">balanced meals | no heating required</h3>
+                    </div>
+                    
+                    <div class="card relative z-40 !py-[1.5vh] !mb-[0.8vh]">
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1rem,2vh,1.2rem)] !mb-0.5">Asian Veggie Bowl</h4>
+                            <p class="course-desc !text-[clamp(0.65rem,1.3vh,0.85rem)]">Edamame, bean sprouts, rice noodles, peanuts, avo, mango, radish, carrots, cucumber, pak choi, spring onion, sesame seeds, yuzu dressing.</p>
+                            <button class="order-btn !mt-1 !py-[0.6vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="addSuperfood('Asian Veggie Bowl', 80)"><span class="text-white">R80</span></button>
+                        </div>
+                        <div class="course-block !mb-3">
+                            <h4 class="opt-title !text-[clamp(1rem,2vh,1.2rem)] !mb-0.5">Greek Veggie Bowl</h4>
+                            <p class="course-desc !text-[clamp(0.65rem,1.3vh,0.85rem)]">Roasted chickpeas, feta cheese, roasted almonds, orzo, olives, roasted aubergine, peppers, tomatoes, cucumber, red onion, lemon & herb yoghurt dressing.</p>
+                            <button class="order-btn !mt-1 !py-[0.6vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="addSuperfood('Greek Veggie Bowl', 80)"><span class="text-white">R80</span></button>
+                        </div>
+                        <div class="course-block !mb-0">
+                            <h4 class="opt-title !text-[clamp(1rem,2vh,1.2rem)] !mb-0.5">Mexican Veggie Bowl</h4>
+                            <p class="course-desc !text-[clamp(0.65rem,1.3vh,0.85rem)]">Fried beans, corn, yoghurt, avo, fried basmati rice, roasted peppers, olives, tomatoes, cucumber, red onion, red cabbage, lettuce, chilli & lime dressing.</p>
+                            <button class="order-btn !mt-1 !py-[0.6vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="addSuperfood('Mexican Veggie Bowl', 80)"><span class="text-white">R80</span></button>
+                        </div>
+                    </div>
+
+                    <button onclick="goToPage(7)" class="w-full mt-[1.5vh] bg-emerald-600/20 border border-emerald-500 text-emerald-400 py-[1vh] rounded font-bold text-[clamp(0.65rem,1.3vh,0.85rem)] flex items-center justify-center gap-2 transition hover:bg-emerald-600 hover:text-white">
+                        <i class="fa-solid fa-cart-shopping"></i> View Superfood Order
+                    </button>
+                </div>
+                <div class="page-number">5</div>
+            </div>
+        </div>
+
+        <!-- Index 6 : Superfood Juices & Snacks -->
+        <div class="page">
+            <div class="page-content">
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none !mb-[1vh]">
+                        <h2 class="page-title !text-[clamp(1.3rem,2.8vh,2rem)]">250ml Super Juices</h2>
+                        <h3 class="page-subtitle !normal-case !tracking-wider">pure cold-pressed goodness</h3>
+                    </div>
+                    
+                    <div class="card relative z-40 !py-[1.5vh] !mb-[0.8vh]">
+                        <div class="grid grid-cols-2 gap-[1.5vw]">
+                            <div class="course-block !mb-1">
+                                <h4 class="opt-title !text-[clamp(0.85rem,1.7vh,1rem)] !mb-0.5">Power Juice</h4>
+                                <p class="course-desc !text-[clamp(0.6rem,1.2vh,0.75rem)] !leading-tight">Orange, beetroot, ginger.</p>
+                                <button class="order-btn !mt-1.5 !py-[0.6vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="addSuperfood('Power Juice', 35)"><span class="text-white">R35</span></button>
+                            </div>
+                            <div class="course-block !mb-1">
+                                <h4 class="opt-title !text-[clamp(0.85rem,1.7vh,1rem)] !mb-0.5">Booster Juice</h4>
+                                <p class="course-desc !text-[clamp(0.6rem,1.2vh,0.75rem)] !leading-tight">Celery, apple, cucumber, lemon.</p>
+                                <button class="order-btn !mt-1.5 !py-[0.6vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="addSuperfood('Booster Juice', 35)"><span class="text-white">R35</span></button>
+                            </div>
+                            <div class="course-block !mb-0">
+                                <h4 class="opt-title !text-[clamp(0.85rem,1.7vh,1rem)] !mb-0.5">Glow Juice</h4>
+                                <p class="course-desc !text-[clamp(0.6rem,1.2vh,0.75rem)] !leading-tight">Ruby grapefruit, carrot, apple.</p>
+                                <button class="order-btn !mt-1.5 !py-[0.6vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="addSuperfood('Glow Juice', 35)"><span class="text-white">R35</span></button>
+                            </div>
+                            <div class="course-block !mb-0">
+                                <h4 class="opt-title !text-[clamp(0.85rem,1.7vh,1rem)] !mb-0.5">Hydra Juice</h4>
+                                <p class="course-desc !text-[clamp(0.6rem,1.2vh,0.75rem)] !leading-tight">Watermelon, lemon, ginger.</p>
+                                <button class="order-btn !mt-1.5 !py-[0.6vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="addSuperfood('Hydra Juice', 35)"><span class="text-white">R35</span></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="page-header pointer-events-none !mb-[1vh] !mt-[1vh]">
+                        <h2 class="page-title !text-[clamp(1.3rem,2.8vh,2rem)]">Super Snacks</h2>
+                        <h3 class="page-subtitle !normal-case !tracking-wider">all-day healthy nibbles</h3>
+                    </div>
+
+                    <div class="card relative z-40 !py-[1.5vh] !mb-0">
+                        <div class="grid grid-cols-1 gap-[1vh]">
+                            <div class="course-block !mb-1">
+                                <h4 class="opt-title !text-[clamp(0.95rem,1.9vh,1.1rem)] !mb-0.5">Seed Crackers</h4>
+                                <p class="course-desc !text-[clamp(0.65rem,1.3vh,0.85rem)]">4 x sunflower, sesame, chia, pumpkin & linseed crackers with hummus.</p>
+                                <button class="order-btn !mt-1 !py-[0.6vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="addSuperfood('Seed Crackers (4)', 25)"><span class="text-white">R25</span></button>
+                            </div>
+                            <div class="course-block !mb-1">
+                                <h4 class="opt-title !text-[clamp(0.95rem,1.9vh,1.1rem)] !mb-0.5">Date Balls</h4>
+                                <p class="course-desc !text-[clamp(0.65rem,1.3vh,0.85rem)]">4 x date, almond, peanut, oat & cocoa balls coated in coconut.</p>
+                                <button class="order-btn !mt-1 !py-[0.6vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="addSuperfood('Date Balls (4)', 25)"><span class="text-white">R25</span></button>
+                            </div>
+                            <div class="course-block !mb-0">
+                                <h4 class="opt-title !text-[clamp(0.95rem,1.9vh,1.1rem)] !mb-0.5">Bone Broth</h4>
+                                <p class="course-desc !text-[clamp(0.65rem,1.3vh,0.85rem)]">350ml simmered chicken broth with celery, onion, carrots & spices.</p>
+                                <button class="order-btn !mt-1 !py-[0.6vh] !text-[clamp(0.55rem,1.1vh,0.75rem)]" onclick="addSuperfood('Bone Broth (350ml)', 45)"><span class="text-white">R45</span></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="goToPage(7)" class="w-full mt-[1.5vh] bg-emerald-600/20 border border-emerald-500 text-emerald-400 py-[1vh] rounded font-bold text-[clamp(0.65rem,1.3vh,0.85rem)] flex items-center justify-center gap-2 transition hover:bg-emerald-600 hover:text-white">
+                        <i class="fa-solid fa-cart-shopping"></i> View Superfood Order
+                    </button>
+                </div>
+                <div class="page-number">6</div>
+            </div>
+        </div>
+
+        <!-- Index 7 : Superfood Cart & Checkout -->
+        <div class="page">
+            <div class="page-content">
+                <div class="vertical-center-wrapper">
+                    <div class="page-header pointer-events-none !mb-[1vh]">
+                        <h2 class="page-title">Your Order</h2>
+                        <h3 class="page-subtitle">Superfood Checkout</h3>
+                    </div>
+                    
+                    <div class="card relative z-40 !py-[2vh] !bg-[#1c1813] border-warmgold/30">
+                        <div id="sf-cart-items" class="max-h-[25vh] overflow-y-auto pr-2 mb-3">
+                            <p class="text-gray-500 italic text-sm text-center py-4">Your cart is empty.</p>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-warmgold/30 pt-3">
+                            <span class="font-bold text-white uppercase tracking-wider text-[clamp(0.8rem,1.6vh,1rem)]">Total</span>
+                            <span id="sf-total" class="font-bold text-warmgold text-[clamp(1.1rem,2.2vh,1.4rem)]">R0</span>
+                        </div>
+                    </div>
+
+                    <form id="superfood-order-form" class="flex-1 flex flex-col justify-center space-y-[1vh] w-full px-2 box-border relative z-50" onsubmit="submitSuperfoodOrder(event)">
+                        
+                        <div class="flex flex-col w-full">
+                            <label class="form-label">Your Name</label>
+                            <input type="text" id="sf-name" required>
+                        </div>
+
+                        <div class="flex flex-col w-full min-w-0">
+                            <label class="form-label">Collection Date (Tue/Thu Only)</label>
+                            <select id="sf-date" required class="bg-black text-white">
+                                <!-- Populated by JS -->
+                            </select>
+                        </div>
+                        
+                        <div class="flex flex-col w-full min-w-0">
+                            <label class="form-label">Exact Collection Time (12:00 - 17:00)</label>
+                            <input type="time" id="sf-time" min="12:00" max="17:00" required class="bg-black text-white">
+                        </div>
+
+                        <div class="flex flex-col w-full">
+                            <label class="form-label">Your Address (Saved for next time)</label>
+                            <textarea id="sf-address" rows="1" placeholder="Enter your full address" required></textarea>
+                        </div>
+
+                        <div class="flex flex-col w-full">
+                            <label class="form-label">Notes / Allergies</label>
+                            <input type="text" id="sf-notes" placeholder="Optional dietary requirements">
+                        </div>
+
+                        <div class="bg-[#1c1813] border border-warmgold/30 rounded-md p-3 text-center w-full shadow-inner mt-[1vh]">
+                            <p class="text-[clamp(0.65rem,1.3vh,0.85rem)] text-gray-300 mb-1">Pickup: <span class="text-white font-bold">16 Lake Street, Vincent</span></p>
+                            <p class="text-[clamp(0.65rem,1.3vh,0.85rem)] text-gray-300">Driver PIN: <span id="display-pin" class="text-warmgold font-bold text-[clamp(1rem,2vh,1.2rem)] tracking-widest ml-1"></span></p>
+                            <p class="text-[clamp(0.55rem,1.1vh,0.7rem)] text-gray-500 mt-1 italic">Please ensure your Uber driver has this PIN.</p>
+                        </div>
+
+                        <button type="submit" class="mt-[1.5vh] w-full flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white py-[1.2vh] rounded-md font-bold tracking-wider text-[clamp(0.75rem,1.5vh,0.95rem)] transition shadow-lg border border-emerald-500 cursor-pointer">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>Checkout via WhatsApp</span>
+                        </button>
+                        <button type="button" onclick="goToPage(3)" class="mt-[1vh] text-gray-400 text-[clamp(0.6rem,1.2vh,0.8rem)] font-bold uppercase tracking-wider text-center w-full cursor-pointer">Back to Bowls</button>
+                    </form>
+                </div>
+                <div class="page-number">7</div>
+            </div>
+        </div>
+
+        <!-- Index 8 : Private Dining 2-Course (1 & 2) -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -301,11 +573,11 @@
                         <button class="order-btn" onclick="selectMenu('Private Dining 2-Course: Option 2')">Book This Menu</button>
                     </div>
                 </div>
-                <div class="page-number">3</div>
+                <div class="page-number">8</div>
             </div>
         </div>
 
-        <!-- Index 4 : Private Dining 2-Course (3 & 4) -->
+        <!-- Index 9 : Private Dining 2-Course (3 & 4) -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -368,11 +640,11 @@
                         <button class="order-btn" onclick="selectMenu('Private Dining 2-Course: Option 4')">Book This Menu</button>
                     </div>
                 </div>
-                <div class="page-number">4</div>
+                <div class="page-number">9</div>
             </div>
         </div>
 
-        <!-- Index 5 : Private Dining 3-Course (1) -->
+        <!-- Index 10 : Private Dining 3-Course (1) -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -417,11 +689,11 @@
                         <button class="order-btn" onclick="selectMenu('Private Dining 3-Course: Option 1')">Book This Menu</button>
                     </div>
                 </div>
-                <div class="page-number">5</div>
+                <div class="page-number">10</div>
             </div>
         </div>
 
-        <!-- Index 6 : Private Dining 3-Course (2 & 3) -->
+        <!-- Index 11 : Private Dining 3-Course (2 & 3) -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -498,11 +770,11 @@
                         <button class="order-btn" onclick="selectMenu('Private Dining 3-Course: Option 3')">Book This Menu</button>
                     </div>
                 </div>
-                <div class="page-number">6</div>
+                <div class="page-number">11</div>
             </div>
         </div>
 
-        <!-- Index 7 : Family Style (1 & 2) -->
+        <!-- Index 12 : Family Style (1 & 2) -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -579,11 +851,11 @@
                         <button class="order-btn !py-[0.8vh]" onclick="selectMenu('Family Style Feast: Option 2')">Book This Menu</button>
                     </div>
                 </div>
-                <div class="page-number">7</div>
+                <div class="page-number">12</div>
             </div>
         </div>
 
-        <!-- Index 8 : Family Style (3) -->
+        <!-- Index 13 : Family Style (3) -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -628,11 +900,11 @@
                         <button class="order-btn" onclick="selectMenu('Family Style Feast: Option 3')">Book This Menu</button>
                     </div>
                 </div>
-                <div class="page-number">8</div>
+                <div class="page-number">13</div>
             </div>
         </div>
 
-        <!-- Index 9 : Foodie Bars (1 & 2) -->
+        <!-- Index 14 : Foodie Bars (1 & 2) -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -703,11 +975,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="page-number">9</div>
+                <div class="page-number">14</div>
             </div>
         </div>
 
-        <!-- Index 10 : Foodie Bars (3 & 4) -->
+        <!-- Index 15 : Foodie Bars (3 & 4) -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -778,11 +1050,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="page-number">10</div>
+                <div class="page-number">15</div>
             </div>
         </div>
 
-        <!-- Index 11 : Convenience 1 (Chicken Meals) - 3 blocks -->
+        <!-- Index 16 : Convenience 1 (Chicken Meals) - 3 blocks -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -827,11 +1099,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="page-number">11</div>
+                <div class="page-number">16</div>
             </div>
         </div>
 
-        <!-- Index 12 : Convenience 2 (Chicken & Beef) - 3 blocks -->
+        <!-- Index 17 : Convenience 2 (Chicken & Beef) - 3 blocks -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -876,11 +1148,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="page-number">12</div>
+                <div class="page-number">17</div>
             </div>
         </div>
 
-        <!-- Index 13 : Convenience 3 (Beef & Lamb) - 3 blocks -->
+        <!-- Index 18 : Convenience 3 (Beef & Lamb) - 3 blocks -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -925,11 +1197,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="page-number">13</div>
+                <div class="page-number">18</div>
             </div>
         </div>
 
-        <!-- Index 14 : Convenience 4 (Lamb & Seafood) - 3 blocks -->
+        <!-- Index 19 : Convenience 4 (Lamb & Seafood) - 3 blocks -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -974,11 +1246,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="page-number">14</div>
+                <div class="page-number">19</div>
             </div>
         </div>
 
-        <!-- Index 15 : Convenience 5 (Seafood & Veg) - 3 blocks -->
+        <!-- Index 20 : Convenience 5 (Seafood & Veg) - 3 blocks -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -1023,11 +1295,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="page-number">15</div>
+                <div class="page-number">20</div>
             </div>
         </div>
 
-        <!-- Index 16 : Convenience 6 (Vegetarian + Info block) -->
+        <!-- Index 21 : Convenience 6 (Vegetarian + Info block) -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -1058,11 +1330,11 @@
                         <p class="course-desc"><strong>Heating & Storage:</strong> Delivered in microwave & oven-safe containers. Keep refrigerated and consume within 3 days.</p>
                     </div>
                 </div>
-                <div class="page-number">16</div>
+                <div class="page-number">21</div>
             </div>
         </div>
 
-        <!-- Index 17 : Harvest Tables (1 & 2) -->
+        <!-- Index 22 : Harvest Tables (1 & 2) -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -1101,11 +1373,11 @@
                         <button class="order-btn" onclick="selectMenu('Harvest Table: Farmer\'s Yield')">Book Harvest Table</button>
                     </div>
                 </div>
-                <div class="page-number">17</div>
+                <div class="page-number">22</div>
             </div>
         </div>
 
-        <!-- Index 18 : Harvest Tables (3) -->
+        <!-- Index 23 : Harvest Tables (3) -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -1130,137 +1402,137 @@
                         <button class="order-btn !py-[1.5vh] !text-[0.9rem]" onclick="selectMenu('Harvest Table: Forager\'s Table')">Book Harvest Table</button>
                     </div>
                 </div>
-                <div class="page-number">18</div>
+                <div class="page-number">23</div>
             </div>
         </div>
 
-        <!-- Index 19 : Gallery 1 -->
+        <!-- Index 24 : Gallery 1 -->
         <div class="page">
             <div class="page-content bg-black !p-0 !justify-center">
                 <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260827_175438.jpg');"></div>
-                <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
-                <div class="page-number !text-white/80 z-20 !bottom-6">19</div>
-            </div>
-        </div>
-
-        <!-- Index 20 : Gallery 2 -->
-        <div class="page">
-            <div class="page-content bg-black !p-0 !justify-center">
-                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260711_134723.jpg');"></div>
-                <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
-                <div class="page-number !text-white/80 z-20 !bottom-6">20</div>
-            </div>
-        </div>
-
-        <!-- Index 21 : Gallery 3 -->
-        <div class="page">
-            <div class="page-content bg-black !p-0 !justify-center">
-                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250907_092046.jpg');"></div>
-                <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
-                <div class="page-number !text-white/80 z-20 !bottom-6">21</div>
-            </div>
-        </div>
-
-        <!-- Index 22 : Gallery 4 -->
-        <div class="page">
-            <div class="page-content bg-black !p-0 !justify-center">
-                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250428_191038-scaled.jpg');"></div>
-                <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
-                <div class="page-number !text-white/80 z-20 !bottom-6">22</div>
-            </div>
-        </div>
-
-        <!-- Index 23 : Gallery 5 -->
-        <div class="page">
-            <div class="page-content bg-black !p-0 !justify-center">
-                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250604_183025-scaled.jpg');"></div>
-                <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
-                <div class="page-number !text-white/80 z-20 !bottom-6">23</div>
-            </div>
-        </div>
-
-        <!-- Index 24 : Gallery 6 -->
-        <div class="page">
-            <div class="page-content bg-black !p-0 !justify-center">
-                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20251105_133224-scaled.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">24</div>
             </div>
         </div>
 
-        <!-- Index 25 : Gallery 7 -->
+        <!-- Index 25 : Gallery 2 -->
         <div class="page">
             <div class="page-content bg-black !p-0 !justify-center">
-                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250905_200157-scaled.jpg');"></div>
+                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260711_134723.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">25</div>
             </div>
         </div>
 
-        <!-- Index 26 : Gallery 8 -->
+        <!-- Index 26 : Gallery 3 -->
         <div class="page">
             <div class="page-content bg-black !p-0 !justify-center">
-                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250622_123024.jpg');"></div>
+                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250907_092046.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">26</div>
             </div>
         </div>
 
-        <!-- Index 27 : Gallery 9 -->
+        <!-- Index 27 : Gallery 4 -->
         <div class="page">
             <div class="page-content bg-black !p-0 !justify-center">
-                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250428_184235-scaled.jpg');"></div>
+                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250428_191038-scaled.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">27</div>
             </div>
         </div>
 
-        <!-- Index 28 : Gallery 10 -->
+        <!-- Index 28 : Gallery 5 -->
         <div class="page">
             <div class="page-content bg-black !p-0 !justify-center">
-                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260214_192611.jpg');"></div>
+                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250604_183025-scaled.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">28</div>
             </div>
         </div>
 
-        <!-- Index 29 : Gallery 11 -->
+        <!-- Index 29 : Gallery 6 -->
         <div class="page">
             <div class="page-content bg-black !p-0 !justify-center">
-                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260711_194453-scaled.jpg');"></div>
+                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20251105_133224-scaled.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">29</div>
             </div>
         </div>
 
-        <!-- Index 30 : Gallery 12 -->
+        <!-- Index 30 : Gallery 7 -->
         <div class="page">
             <div class="page-content bg-black !p-0 !justify-center">
-                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260828_121201.jpg');"></div>
+                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250905_200157-scaled.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">30</div>
             </div>
         </div>
 
-        <!-- Index 31 : Gallery 13 -->
+        <!-- Index 31 : Gallery 8 -->
         <div class="page">
             <div class="page-content bg-black !p-0 !justify-center">
-                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260901_1117481.jpg');"></div>
+                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250622_123024.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">31</div>
             </div>
         </div>
 
-        <!-- Index 32 : Gallery 14 -->
+        <!-- Index 32 : Gallery 9 -->
         <div class="page">
             <div class="page-content bg-black !p-0 !justify-center">
-                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260831_163358-scaled.jpg');"></div>
+                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20250428_184235-scaled.jpg');"></div>
                 <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
                 <div class="page-number !text-white/80 z-20 !bottom-6">32</div>
             </div>
         </div>
 
-        <!-- Index 33 : Order Booking Form -->
+        <!-- Index 33 : Gallery 10 -->
+        <div class="page">
+            <div class="page-content bg-black !p-0 !justify-center">
+                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260214_192611.jpg');"></div>
+                <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
+                <div class="page-number !text-white/80 z-20 !bottom-6">33</div>
+            </div>
+        </div>
+
+        <!-- Index 34 : Gallery 11 -->
+        <div class="page">
+            <div class="page-content bg-black !p-0 !justify-center">
+                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260711_194453-scaled.jpg');"></div>
+                <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
+                <div class="page-number !text-white/80 z-20 !bottom-6">34</div>
+            </div>
+        </div>
+
+        <!-- Index 35 : Gallery 12 -->
+        <div class="page">
+            <div class="page-content bg-black !p-0 !justify-center">
+                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260828_121201.jpg');"></div>
+                <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
+                <div class="page-number !text-white/80 z-20 !bottom-6">35</div>
+            </div>
+        </div>
+
+        <!-- Index 36 : Gallery 13 -->
+        <div class="page">
+            <div class="page-content bg-black !p-0 !justify-center">
+                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260901_1117481.jpg');"></div>
+                <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
+                <div class="page-number !text-white/80 z-20 !bottom-6">36</div>
+            </div>
+        </div>
+
+        <!-- Index 37 : Gallery 14 -->
+        <div class="page">
+            <div class="page-content bg-black !p-0 !justify-center">
+                <div class="absolute inset-3 border border-warmgold rounded-sm bg-cover bg-center" style="background-image: url('https://www.privatechefanna.co.za/wp-content/uploads/2026/09/20260831_163358-scaled.jpg');"></div>
+                <div class="absolute inset-x-3 bottom-3 h-24 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-sm"></div>
+                <div class="page-number !text-white/80 z-20 !bottom-6">37</div>
+            </div>
+        </div>
+
+        <!-- Index 38 : Order Booking Form -->
         <div class="page">
             <div class="page-content">
                 <div class="vertical-center-wrapper">
@@ -1307,7 +1579,7 @@
                         </div>
 
                         <div class="flex flex-col w-full">
-                            <label class="form-label">Address / Notes</label>
+                            <label class="form-label">Address / Notes / Allergies</label>
                             <textarea id="order-notes" rows="2"></textarea>
                         </div>
                         
@@ -1319,11 +1591,11 @@
                         <button type="button" onclick="prevPage()" class="mt-[1vh] text-gray-400 text-[clamp(0.6rem,1.2vh,0.8rem)] font-bold uppercase tracking-wider text-center w-full cursor-pointer">Cancel & Go Back</button>
                     </form>
                 </div>
-                <div class="page-number">33</div>
+                <div class="page-number">38</div>
             </div>
         </div>
 
-        <!-- Index 34 : Contact / Back Cover -->
+        <!-- Index 39 : Contact / Back Cover -->
         <div class="page">
             <div class="page-content bg-[#121212]">
                 <div class="vertical-center-wrapper flex flex-col justify-center items-center text-center relative z-40">
@@ -1436,11 +1708,174 @@
             const fulfillment = document.getElementById('order-fulfillment').value;
             const notes = document.getElementById('order-notes').value;
             
-            const message = `*NEW FLIPBOOK ORDER* 🍽️\n\n📌 *Menu:* ${menu}\n👤 *Name:* ${name}\n📅 *Date:* ${date}\n⏰ *Time:* ${time}\n👥 *Guests:* ${guests}\n🚚 *Fulfillment:* ${fulfillment}\n📝 *Address/Notes:* ${notes || 'None'}`;
+            const message = `*NEW FLIPBOOK ORDER* 🍽️\n\n📌 *Menu:* ${menu}\n👤 *Name:* ${name}\n📅 *Date:* ${date}\n⏰ *Time:* ${time}\n👥 *Guests:* ${guests}\n🚚 *Fulfillment:* ${fulfillment}\n📝 *Address/Notes/Allergies:* ${notes || 'None'}`;
             
             const whatsappUrl = `https://wa.me/27729308653?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
         }
+
+        // --- SUPERFOOD CART LOGIC ---
+        let sfCart = {};
+        const generatedPin = Math.floor(1000 + Math.random() * 9000);
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            if(toast) {
+                toast.textContent = msg;
+                toast.classList.remove('opacity-0', 'scale-95');
+                toast.classList.add('opacity-100', 'scale-100');
+                setTimeout(() => {
+                    toast.classList.remove('opacity-100', 'scale-100');
+                    toast.classList.add('opacity-0', 'scale-95');
+                }, 2000);
+            }
+        }
+
+        function addSuperfood(item, price) {
+            if (sfCart[item]) {
+                sfCart[item].qty += 1;
+            } else {
+                sfCart[item] = { price: price, qty: 1 };
+            }
+            renderSuperfoodCart();
+            showToast('Added ' + item);
+        }
+
+        function removeSuperfood(item) {
+            if (sfCart[item]) {
+                sfCart[item].qty -= 1;
+                if (sfCart[item].qty <= 0) delete sfCart[item];
+            }
+            renderSuperfoodCart();
+        }
+
+        function renderSuperfoodCart() {
+            const container = document.getElementById('sf-cart-items');
+            const totalEl = document.getElementById('sf-total');
+            if(!container) return;
+            
+            container.innerHTML = '';
+            let total = 0;
+            
+            if (Object.keys(sfCart).length === 0) {
+                container.innerHTML = '<p class="text-gray-500 italic text-sm text-center py-4">Your cart is empty.</p>';
+                totalEl.textContent = 'R0';
+                return;
+            }
+
+            for (const [item, data] of Object.entries(sfCart)) {
+                const lineTotal = data.price * data.qty;
+                total += lineTotal;
+                container.innerHTML += `
+                    <div class="flex justify-between items-center border-b border-white/10 py-2">
+                        <div class="flex-1 pr-2">
+                            <div class="text-[clamp(0.7rem,1.4vh,0.9rem)] text-white font-semibold leading-tight">${item}</div>
+                            <div class="text-warmgold text-[clamp(0.6rem,1.2vh,0.8rem)]">R${data.price} x ${data.qty}</div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-white font-bold text-[clamp(0.8rem,1.6vh,1rem)]">R${lineTotal}</span>
+                            <button type="button" onclick="removeSuperfood('${item}')" class="text-red-400 p-2 hover:bg-red-400/20 rounded-full transition"><i class="fa-solid fa-minus"></i></button>
+                        </div>
+                    </div>
+                `;
+            }
+            totalEl.textContent = `R${total}`;
+        }
+
+        function populateSfDates() {
+            const select = document.getElementById('sf-date');
+            if(!select) return;
+            select.innerHTML = '';
+            
+            const dates = [];
+            const today = new Date();
+            const targetStart = new Date('2026-11-03T00:00:00');
+            
+            // Normalize dates to midnight for accurate day calculations
+            let currentDate = new Date();
+            currentDate.setHours(0,0,0,0);
+            
+            // Start from today if it's past Nov 3, otherwise start Nov 3
+            let start = currentDate > targetStart ? new Date(currentDate) : new Date(targetStart);
+            let daysAdded = 0;
+            
+            for(let i=0; i<90; i++) {
+                let checkDate = new Date(start);
+                checkDate.setDate(start.getDate() + i);
+                let day = checkDate.getDay(); 
+                
+                if (day === 2 || day === 4) { // Tue or Thu
+                    let isToday = checkDate.getTime() === currentDate.getTime();
+                    
+                    if (isToday) {
+                        // Strict 9 AM same-day cutoff
+                        if (today.getHours() < 9) { 
+                            dates.push(checkDate);
+                            daysAdded++;
+                        }
+                    } else {
+                        dates.push(checkDate);
+                        daysAdded++;
+                    }
+                }
+                if (daysAdded >= 16) break; // Approx 2 months of options
+            }
+
+            dates.forEach((dateObj, idx) => {
+                const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+                const dateString = dateObj.toLocaleDateString('en-ZA', options);
+                const isToday = dateObj.getTime() === currentDate.getTime();
+                
+                const opt = document.createElement('option');
+                opt.value = dateString;
+                // Add a small note for today's date
+                opt.textContent = dateString + (isToday ? " (Today - Ordered before 9am)" : "");
+                select.appendChild(opt);
+            });
+            
+            if(dates.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = "";
+                opt.textContent = "No upcoming slots available";
+                select.appendChild(opt);
+            }
+        }
+
+        function submitSuperfoodOrder(e) {
+            e.preventDefault();
+            if (Object.keys(sfCart).length === 0) {
+                showToast("Your Superfood cart is empty!");
+                return;
+            }
+            
+            const name = document.getElementById('sf-name').value;
+            const address = document.getElementById('sf-address').value;
+            const date = document.getElementById('sf-date').value;
+            const time = document.getElementById('sf-time').value;
+            const notes = document.getElementById('sf-notes').value;
+            
+            // Save data to Firebase for next time
+            if (window.saveUserData) {
+                window.saveUserData(name, address);
+            }
+            
+            let cartText = '';
+            let total = 0;
+            for (const [item, data] of Object.entries(sfCart)) {
+                cartText += `${data.qty}x ${item} (R${data.price * data.qty})\n`;
+                total += (data.price * data.qty);
+            }
+
+            const message = `*NEW SUPERFOOD ORDER* 🥗\n\n👤 *Name:* ${name}\n📍 *Address:* ${address}\n📅 *Collection Date:* ${date}\n⏰ *Uber Time:* ${time}\n⚠️ *Notes/Allergies:* ${notes || 'None'}\n🏠 *Pickup Location:* 16 Lake Street, Vincent\n🔑 *Collection PIN:* ${generatedPin}\n\n*ORDER DETAILS:*\n${cartText}\n*TOTAL: R${total}*\n\n_Please provide PIN ${generatedPin} to your Uber driver._`;
+            
+            const whatsappUrl = `https://wa.me/27729308653?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Initialize dynamic Superfood Dates on load
+        populateSfDates();
+        const pinDisplay = document.getElementById('display-pin');
+        if (pinDisplay) pinDisplay.textContent = generatedPin;
 
         // Swipe Gestures & Edge Taps
         const book = document.getElementById('book');
@@ -1481,6 +1916,64 @@
             if (e.key === 'ArrowRight') nextPage();
             if (e.key === 'ArrowLeft') prevPage();
         });
+    </script>
+
+    <!-- Firebase Storage for remembering customer details -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        let db, auth, userId;
+        try {
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'private-chef-anna';
+            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            const initAuth = async () => {
+                try {
+                    if (typeof __initial_auth_token !== 'undefined') {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                    userId = auth.currentUser.uid;
+                    loadUserData();
+                } catch(e) { console.error("Auth error", e); }
+            };
+            initAuth();
+
+            window.saveUserData = async (name, address) => {
+                if(!userId) return;
+                try {
+                    // Rule 1 strictly applied: /artifacts/{appId}/users/{userId}/{collectionName}
+                    const userRef = doc(db, 'artifacts', appId, 'users', userId, 'profile');
+                    await setDoc(userRef, { name, address }, { merge: true });
+                } catch(e) { console.error("Save error", e); }
+            };
+
+            const loadUserData = async () => {
+                if(!userId) return;
+                try {
+                    const userRef = doc(db, 'artifacts', appId, 'users', userId, 'profile');
+                    const docSnap = await getDoc(userRef);
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        if(data.name) {
+                            document.getElementById('sf-name').value = data.name || '';
+                            document.getElementById('order-name').value = data.name || '';
+                        }
+                        if(data.address) {
+                            document.getElementById('sf-address').value = data.address || '';
+                        }
+                    }
+                } catch(e) { console.error("Load error", e); }
+            };
+        } catch (e) {
+            console.warn("Firebase not initialized in this environment.", e);
+        }
     </script>
 </body>
 </html>
