@@ -145,13 +145,30 @@
 
         /* Forms */
         /* font-size: 16px is required on mobile inputs to prevent unwanted screen zooming on iOS */
-        input, select, textarea { 
+        input[type="text"], input[type="number"], select, textarea { 
             -webkit-appearance: none; width: 100%; box-sizing: border-box; 
             background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); 
             border-radius: 0.25rem; padding: 1vh 1.5vw; color: white; 
-            font-size: 16px; outline: none; 
+            font-size: 16px; outline: none; color-scheme: dark;
         }
+
+        /* CRITICAL FIX: '-webkit-appearance: none' breaks the time/date picker on iOS. Must use 'auto' */
+        input[type="time"], input[type="date"] {
+            -webkit-appearance: auto; width: 100%; box-sizing: border-box; 
+            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 0.25rem; padding: 10px 1.5vw; color: white; 
+            font-size: 16px; outline: none; color-scheme: dark;
+            min-height: 44px; display: block;
+        }
+
         input:focus, select:focus, textarea:focus { border-color: #c5a059; }
+        
+        /* Make date/time picker icons visible on dark background */
+        input[type="time"]::-webkit-calendar-picker-indicator,
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer; opacity: 1; width: 1.5rem; height: 1.5rem;
+        }
+
         .form-label { font-size: clamp(0.55rem, 1.1vh, 0.75rem); color: #9ca3af; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3vh; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .form-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5vw; width: 100%; }
     </style>
@@ -480,7 +497,9 @@
                         
                         <div class="flex flex-col w-full min-w-0">
                             <label class="form-label">Exact Collection Time (12:00 - 17:00)</label>
-                            <input type="time" id="sf-time" min="12:00" max="17:00" required class="bg-black text-white">
+                            <select id="sf-time" required class="bg-black text-white">
+                                <option value="" disabled selected>Select Time</option>
+                            </select>
                         </div>
 
                         <div class="flex flex-col w-full">
@@ -1556,11 +1575,13 @@
                         <div class="form-grid-3">
                             <div class="flex flex-col min-w-0">
                                 <label class="form-label">Date</label>
-                                <input type="date" id="order-date" required>
+                                <input type="date" id="order-date" required onclick="this.showPicker && this.showPicker()">
                             </div>
                             <div class="flex flex-col min-w-0">
                                 <label class="form-label">Time</label>
-                                <input type="time" id="order-time" required>
+                                <select id="order-time" required class="bg-black text-white">
+                                    <option value="" disabled selected>Time</option>
+                                </select>
                             </div>
                             <div class="flex flex-col min-w-0">
                                 <label class="form-label">Guests</label>
@@ -1848,10 +1869,15 @@
                 return;
             }
             
+            const time = document.getElementById('sf-time').value;
+            if (time < "12:00" || time > "17:00") {
+                showToast("Pickup time must be between 12:00 and 17:00.");
+                return;
+            }
+            
             const name = document.getElementById('sf-name').value;
             const address = document.getElementById('sf-address').value;
             const date = document.getElementById('sf-date').value;
-            const time = document.getElementById('sf-time').value;
             const notes = document.getElementById('sf-notes').value;
             
             // Save data to Firebase for next time
@@ -1874,6 +1900,41 @@
 
         // Initialize dynamic Superfood Dates on load
         populateSfDates();
+
+        // Populate Time Dropdowns with digital increments
+        function populateTimeDropdowns() {
+            const sfTime = document.getElementById('sf-time');
+            const orderTime = document.getElementById('order-time');
+            
+            // Superfood: 12:00 to 17:00 in 15-min increments
+            if (sfTime) {
+                for (let h = 12; h <= 17; h++) {
+                    for (let m = 0; m < 60; m += 15) {
+                        if (h === 17 && m > 0) continue; // Stop exactly at 17:00
+                        const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+                        const opt = document.createElement('option');
+                        opt.value = timeStr;
+                        opt.textContent = timeStr;
+                        sfTime.appendChild(opt);
+                    }
+                }
+            }
+            
+            // Main Order: 08:00 to 22:00 in 15-min increments
+            if (orderTime) {
+                for (let h = 8; h <= 22; h++) {
+                    for (let m = 0; m < 60; m += 15) {
+                        const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+                        const opt = document.createElement('option');
+                        opt.value = timeStr;
+                        opt.textContent = timeStr;
+                        orderTime.appendChild(opt);
+                    }
+                }
+            }
+        }
+        populateTimeDropdowns();
+
         const pinDisplay = document.getElementById('display-pin');
         if (pinDisplay) pinDisplay.textContent = generatedPin;
 
